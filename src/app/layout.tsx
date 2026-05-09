@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/NavBar";
@@ -15,9 +15,9 @@ const geistSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Quick Convert - Fast, Secure, Client-side Image Conversion",
+  title: "Plzwork - Tools That Actually Work",
   description:
-    "Quick Convert is a lightweight, client-side image conversion tool that ensures your images never leave your browser. Convert images quickly and securely with support for WebP, JPEG, and PNG formats.",
+    "Plzwork builds useful design, development, AI, productivity, and file conversion tools including Quick Convert.",
   keywords: [
     "image conversion",
     "jpg to webp",
@@ -58,7 +58,8 @@ export const metadata: Metadata = {
     "secure image conversion",
     "fast image conversion",
     "quick image conversion",
-    "Quick Convert",
+    "Plzwork",
+    "Quick Convert by Plzwork",
     "Next.js",
     "image optimization",
     "online image converter",
@@ -114,16 +115,15 @@ export const metadata: Metadata = {
     "best image converter 2030",
 
   ],
-  themeColor: "#ffffff",
   alternates: {
     canonical: "https://quick-convert-img.vercel.app/",
   },
   openGraph: {
-    title: "Quick Convert - Fast, Secure, Client-side Image Conversion",
+    title: "Plzwork - Tools That Actually Work",
     description:
-      "Convert your images quickly and securely in your browser with Quick Convert. No uploads to a server, ensuring privacy and speed.",
+      "Explore Plzwork products for design, development, AI, productivity, and file conversion.",
     url: "https://quick-convert-img.vercel.app/",
-    siteName: "Quick Convert",
+    siteName: "Plzwork",
     locale: "en_US",
     type: "website",
     images: [
@@ -131,19 +131,23 @@ export const metadata: Metadata = {
         url: "https://quick-convert-img.vercel.app/og-image.png", // Replace with your actual OG image URL
         width: 1200,
         height: 630,
-        alt: "Quick Convert - Image Conversion",
+        alt: "Plzwork products",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Quick Convert - Fast, Secure, Client-side Image Conversion",
+    title: "Plzwork - Tools That Actually Work",
     description:
-      "Experience fast and secure image conversion directly in your browser with Quick Convert. No server uploads for enhanced privacy.",
+      "Useful tools for design, development, AI workflows, productivity, and file conversion.",
     images: ["https://quick-convert-img.vercel.app/og-image.png"], // Replace with your actual image URL
     creator: "@your_twitter_handle", // Replace with your Twitter handle
   },
   metadataBase: new URL("https://quick-convert-img.vercel.app/"),
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -176,17 +180,11 @@ export default function RootLayout({
         >
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "Quick Convert",
+            "@type": "Organization",
+            "name": "Plzwork",
             "url": "https://quick-convert-img.vercel.app/",
             "description":
-              "Quick Convert is a client-side image conversion tool that converts images quickly and securely.",
-            "applicationCategory": "Utilities",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD",
-            },
+              "Plzwork builds useful products including Quick Convert, a client-side image conversion tool.",
           })}
         </Script>
       </head>

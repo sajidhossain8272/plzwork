@@ -17,27 +17,27 @@ const uploadFormats = [
 const ConversionTable = () => {
   return (
     <section className='max-w-7xl mx-auto px-4 py-10'>
-      <h3 className='text-3xl font-bold text-center text-gray-800 mb-4'>
+      <h3 className='text-3xl font-semibold text-center text-[#0d161c] mb-4'>
         Supported Image Conversions
       </h3>
-      <p className='text-center text-gray-600 mb-6'>
+      <p className='text-center text-[#5f6c74] mb-6'>
         Below are the supported image format conversions available in Quick
         Convert.
       </p>
 
-      <div className='overflow-x-auto border border-gray-100 rounded-lg shadow-lg '>
-        <table className='w-full text-left text-sm divide-y divide-gray-100'>
-          <thead className='bg-gray-50'>
+      <div className='overflow-x-auto rounded-lg border border-[#dde4da] bg-white shadow-sm'>
+        <table className='w-full text-left text-sm divide-y divide-[#eef1ec]'>
+          <thead className='bg-[#f4f6f2] text-[#40505a]'>
             <tr>
-              <th className='p-3 border-b border-gray-100'>Upload Format</th>
-              <th className='p-3 border-b border-gray-100'>Can Convert To</th>
+              <th className='p-3 border-b border-[#dde4da]'>Upload Format</th>
+              <th className='p-3 border-b border-[#dde4da]'>Can Convert To</th>
             </tr>
           </thead>
           <tbody>
             {uploadFormats.map((format) => (
               <tr
                 key={format}
-                className='border-b border-gray-200 hover:bg-gray-50 transition-colors'
+                className='border-b border-[#eef1ec] hover:bg-[#fbfdf9] transition-colors'
               >
                 <td className='p-3 font-medium '>{format}</td>
                 <td className='p-3'>
@@ -51,8 +51,8 @@ const ConversionTable = () => {
         </table>
       </div>
 
-      <div className='mt-6 text-sm text-gray-700 bg-yellow-100 p-4 rounded-lg shadow-sm'>
-        <p className='mb-2 font-semibold'>⚠ Important Disclaimers:</p>
+      <div className='mt-6 rounded-lg border border-[#eadfa8] bg-[#fff9dc] p-4 text-sm text-[#514d34] shadow-sm'>
+        <p className='mb-2 font-semibold'>Important Disclaimers:</p>
         <ul className='list-disc list-inside'>
           <li>
             <span className="font-bold">HEIC</span> and <span className="font-bold">HEIF</span> formats may take longer to process due to additional
@@ -63,7 +63,7 @@ const ConversionTable = () => {
             processing power, conversions may take longer. High file size or
             bulk conversions may cause instability, except on high-end devices.
           </li>
-          <li>Our conversion limit is determined by your device&apos;s processing power. That&apos;s why we say there&apos;s no fixed limit—your device sets the pace!</li>
+          <li>Our conversion limit is determined by your device&apos;s processing power. That&apos;s why we say there&apos;s no fixed limit; your device sets the pace.</li>
           <li>We currently do not support <span className="font-bold">SVG</span> file format at this time. </li>
         </ul>
       </div>

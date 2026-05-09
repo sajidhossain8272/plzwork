@@ -45,12 +45,12 @@ export default function ConversionControls({
     selectedCount === 1 ? "Convert" : "Convert All";
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8 space-y-3">
-      <p className="text-sm text-gray-600">
+    <div className="mb-8 space-y-4 rounded-lg border border-[#dde4da] bg-[#fbfcfa] p-5">
+      <p className="text-sm text-[#59666f]">
         All conversions happen <strong>client-side</strong>. Your images never
         leave your browser.
       </p>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-[#59666f]">
         Choose format, quality, and resolution. Then select which images to
         convert below, and click <strong>{convertButtonText}</strong>.
       </p>
@@ -58,7 +58,7 @@ export default function ConversionControls({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         {/* Format */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-[#33424a]">
             Format
           </label>
           <select
@@ -69,7 +69,7 @@ export default function ConversionControls({
                 format: e.target.value as "webp" | "jpeg" | "png",
               })
             }
-            className="w-full p-2 border rounded-md"
+            className="w-full rounded-lg border border-[#cfd8cc] bg-white p-2.5 text-[#17232a]"
           >
             <option value="webp">WebP</option>
             <option value="jpeg">JPEG</option>
@@ -79,7 +79,7 @@ export default function ConversionControls({
 
         {/* Quality */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-[#33424a]">
             Quality
           </label>
           <select
@@ -89,7 +89,7 @@ export default function ConversionControls({
               setQualityOption(option);
               setSettings({ ...settings, quality: qualityMapping[option] });
             }}
-            className="w-full p-2 border rounded-md"
+            className="w-full rounded-lg border border-[#cfd8cc] bg-white p-2.5 text-[#17232a]"
           >
             <option value="high">High</option>
             <option value="medium">Medium</option>
@@ -99,7 +99,7 @@ export default function ConversionControls({
 
         {/* Resolution */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-[#33424a]">
             Resolution
           </label>
           <select
@@ -110,7 +110,7 @@ export default function ConversionControls({
                 resolution: e.target.value as Resolution,
               })
             }
-            className="w-full p-2 border rounded-md"
+            className="w-full rounded-lg border border-[#cfd8cc] bg-white p-2.5 text-[#17232a]"
           >
             {resolutions.map((res) => (
               <option key={res.value} value={res.value}>
@@ -124,9 +124,9 @@ export default function ConversionControls({
         <button
           onClick={onConvert}
           disabled={!hasSelectedImages}
-          className={`w-full py-2 px-4 rounded-md transition-colors ${
+          className={`w-full rounded-lg px-4 py-2.5 font-semibold transition-colors ${
             hasSelectedImages
-              ? "bg-blue-600 hover:bg-blue-700 text-white"
+              ? "bg-[#42b719] hover:bg-[#349814] text-white"
               : "bg-gray-300 cursor-not-allowed"
           }`}
         >

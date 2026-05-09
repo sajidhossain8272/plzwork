@@ -2,9 +2,10 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaRocket, FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -12,30 +13,39 @@ export default function NavBar() {
 
   // Base classes for primary links
   const linkBase     = 'block px-4 py-2 font-semibold rounded-lg transition-colors';
-  const linkActive   = 'bg-blue-800 text-white';
-  const linkInactive = 'text-gray-800 hover:bg-blue-600 hover:text-white';
+  const linkActive   = 'bg-[#0e171d] text-white';
+  const linkInactive = 'text-[#26323a] hover:bg-[#eef7ea] hover:text-[#1d6f08]';
 
   // Base classes for secondary link
   const secBase      = 'block px-4 py-2 font-semibold rounded-lg transition-colors';
   const secActive    = 'bg-gray-200 text-gray-800';
-  const secInactive  = 'text-gray-800 hover:bg-gray-100';
+  const secInactive  = 'text-[#26323a] hover:bg-gray-100';
 
   // Navigation items
   const links = [
-    { href: '/',                     label: 'Image Converter',     active: pathname === '/',                          primary: true },
-    { href: '/ai-alt-tag-generator', label: 'Alt-Text Generator',  active: pathname === '/ai-alt-tag-generator',     primary: true },
+    { href: '/',                     label: 'Products',            active: pathname === '/',                          primary: true },
+    { href: '/quick-convert',        label: 'Quick Convert',       active: pathname === '/quick-convert',             primary: true },
     { href: 'https://github.com/sajidhossain8272/', label: 'Contact Us', active: false,                         primary: false }
   ];
 
   return (
-    <nav className="w-full bg-white shadow-md fixed top-0 z-50">
+    <nav className="fixed top-0 z-50 w-full border-b border-[#dde4da] bg-white/90 shadow-sm backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2 text-2xl font-extrabold text-gray-800 tracking-tight">
-            <FaRocket className="text-blue-600" />
+          <div className="flex items-center space-x-3 text-2xl font-extrabold text-gray-800 tracking-tight">
             <Link href="/" onClick={() => setMenuOpen(false)}>
-              Quick<span className="text-blue-600">Convert</span>
+              <Image
+                src="/plzwork-icon-crop.png"
+                alt="Plzwork"
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-lg object-cover"
+              />
+            </Link>
+            <Link href="/" onClick={() => setMenuOpen(false)} className="leading-none">
+              <span className="text-[#0d161c]">plz</span>
+              <span className="text-[#42b719]">work</span>
             </Link>
           </div>
 
@@ -61,7 +71,7 @@ export default function NavBar() {
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden text-gray-800 hover:text-gray-600 focus:outline-none"
+            className="md:hidden text-[#26323a] hover:text-[#42b719] focus:outline-none"
             onClick={() => setMenuOpen(o => !o)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           >

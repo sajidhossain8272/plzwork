@@ -4,12 +4,12 @@ import { FaGithub } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className='bg-gradient-to-b from-white to-gray-100 border-t border-gray-200 py-10'>
+    <footer className='border-t border-[#dde4da] bg-white py-10'>
       <div className='max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0'>
         {/* Left: Branding / Copyright */}
         <div className='text-lg text-gray-700'>
           &copy; {new Date().getFullYear()}{" "}
-          <span className='font-semibold'>Quick Convert</span>. All rights
+          <span className='font-semibold'>Plzwork</span>. All rights
           reserved.
         </div>
 
@@ -19,7 +19,7 @@ export default function Footer() {
             href='/Quick Convert - Privacy Policy.pdf'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-gray-600 hover:text-blue-600 transition-colors'
+            className='text-gray-600 hover:text-[#42b719] transition-colors'
           >
             Privacy Policy
           </a>
@@ -27,7 +27,7 @@ export default function Footer() {
             href='/Quick Convert - Terms and Conditions.pdf'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-gray-600 hover:text-blue-600 transition-colors'
+            className='text-gray-600 hover:text-[#42b719] transition-colors'
           >
             Terms of Service
           </a>
@@ -39,7 +39,7 @@ export default function Footer() {
             href='https://github.com/sajidhossain8272/quick-convert'
             target='_blank'
             rel='noopener noreferrer'
-            className='hover:text-blue-600 transition-transform transform hover:scale-110'
+            className='hover:text-[#42b719] transition-transform transform hover:scale-110'
             aria-label='GitHub'
           >
             <FaGithub className='text-2xl' />
