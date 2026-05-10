@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSpinner, FaCheckCircle, FaBolt } from "react-icons/fa";
 
-const confettiColors = ["#FFC700", "#FF0000", "#2E3192", "#41BBC7", "#7ED321"];
+const confettiColors = ["#52c41a", "#111a20", "#f5c542", "#41bbc7", "#7ed321"];
 
 interface ConfettiItem {
   left: number;
@@ -72,15 +72,15 @@ const LoadingAnimation: React.FC = () => {
     items-center 
     justify-center 
     bg-white
-    shadow-2xl
+    shadow-sm
     p-6 
-    rounded-xl 
+    rounded-lg
     border 
-    border-gray-200 
+    border-[#dde4da]
     overflow-hidden 
     animate-fadeIn
-    w-[calc(100%-2rem)] // 100% width - 2rem padding
-    max-w-[calc(100%-2rem)] // max-width: 100%-2rem
+    w-[calc(100%-2rem)]
+    max-w-[calc(100%-2rem)]
     h-80
     m-0
   '
@@ -101,24 +101,24 @@ const LoadingAnimation: React.FC = () => {
         }
       `}</style>
 
-      <div className='absolute inset-0 bg-gradient-to-r from-blue-100 via-purple-100 to-blue-100 opacity-60 animate-[gradientMove_5s_ease_infinite]'></div>
+      <div className='absolute inset-0 bg-[#f4f8f1] opacity-80'></div>
 
       {isLoading ? (
         <div className='relative flex flex-col items-center space-y-4 w-full'>
-          <FaSpinner size={64} className='text-indigo-500 animate-spin' />
+          <FaSpinner size={64} className='text-[#42b719] animate-spin' />
           <div className='text-center space-y-1'>
-            <h2 className='text-xl font-semibold text-indigo-600 animate-pulse flex items-center justify-center gap-2'>
+            <h2 className='text-xl font-semibold text-[#142027] animate-pulse flex items-center justify-center gap-2'>
               <FaBolt className='text-yellow-400' />
-              Blazing Fast Conversion!
+              Fast private conversion
             </h2>
-            <p className='text-sm text-gray-500'>
-              Hold tight, your image is converting at lightspeed...
+            <p className='text-sm text-[#62707a]'>
+              Your image stays local while Quick Convert works.
             </p>
           </div>
 
-          <div className='w-full h-3 rounded-full bg-gray-200 overflow-hidden'>
+          <div className='w-full h-3 rounded-full bg-[#dfe7dc] overflow-hidden'>
             <div
-              className='h-full bg-gradient-to-r from-indigo-500 to-blue-400 transition-all duration-200'
+              className='h-full bg-[#42b719] transition-all duration-200'
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -126,12 +126,11 @@ const LoadingAnimation: React.FC = () => {
       ) : (
         <div className='relative flex flex-col items-center space-y-4 animate-[fadeInScale_0.6s_ease-out]'>
           <FaCheckCircle size={70} className='text-green-500 animate-bounce' />
-          <h2 className='text-2xl font-bold text-green-600'>
+          <h2 className='text-2xl font-bold text-[#2f8f14]'>
             Conversion Completed!
           </h2>
-          <p className='text-gray-600 text-center'>
-            That’s how fast our conversion is—
-            <span className='font-bold text-indigo-500'>try it now!</span>
+          <p className='text-[#62707a] text-center'>
+            That&apos;s how fast Plzwork keeps conversion moving.
           </p>
         </div>
       )}

@@ -47,26 +47,26 @@ export default function Dropzone({ onDrop, multiple = false }: DropzoneProps) {
   return (
     <div
       {...getRootProps()}
-      className={`border-4 border-dashed rounded-xl p-8 mb-8 text-center cursor-pointer transition-all 
+      className={`mb-8 cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-all
         ${
           isDragActive
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400"
+            ? "border-[#42b719] bg-[#eefbe9]"
+            : "border-[#cfd8cc] bg-white hover:border-[#9fc995]"
         }`}
     >
       <input {...getInputProps()} />
       <div className="space-y-4">
         <FaArrowUpFromBracket
           className={`h-12 w-12 mx-auto ${
-            isDragActive ? "text-blue-500" : "text-gray-400"
+            isDragActive ? "text-[#42b719]" : "text-[#8d9990]"
           }`}
         />
-        <p className="text-gray-600">
+        <p className="text-[#48565f]">
           {isDragActive
             ? "Drop the images here"
             : "Drag & drop images, or click to select"}
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-[#6a757c]">
           You can upload a single image or multiple images in one go.
         </p>
       </div>
