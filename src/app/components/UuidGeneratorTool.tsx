@@ -15,7 +15,7 @@ export default function UuidGeneratorTool() {
     try {
       const newUuid = crypto.randomUUID();
       setUuid(newUuid);
-    } catch (err) {
+    } catch {
       // Fallback for older browsers if needed, but modern browsers have randomUUID
       setUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);

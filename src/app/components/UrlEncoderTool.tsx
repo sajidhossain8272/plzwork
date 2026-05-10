@@ -20,7 +20,7 @@ export default function UrlEncoderTool() {
       const encoded = encodeURIComponent(text);
       setEncodedUrl(encoded);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Cannot encode input.');
     }
   };
@@ -41,7 +41,7 @@ export default function UrlEncoderTool() {
       const decoded = decodeURIComponent(encoded);
       setRawUrl(decoded);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Invalid URL encoding detected.');
     }
   };
@@ -158,7 +158,7 @@ export default function UrlEncoderTool() {
         <p className="text-[#5a6872] leading-relaxed mb-6">
           URL encoding (Percent-encoding) is used to translate characters that are not allowed in a URL. 
           For example, spaces are replaced by <code>%20</code>, and special characters like <code>&amp;</code> or <code>?</code> 
-          are encoded so they don't break the query string structure.
+          are encoded so they don&apos;t break the query string structure.
         </p>
         <div className="bg-white rounded-2xl p-6 border border-[#e1e5df] shadow-sm">
           <h4 className="font-semibold text-[#0d161c] mb-2 flex items-center gap-2">

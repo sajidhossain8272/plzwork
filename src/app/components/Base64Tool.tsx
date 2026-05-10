@@ -24,7 +24,7 @@ export default function Base64Tool() {
       const encoded = btoa(unescape(encodeURIComponent(text)));
       setBase64Text(encoded);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Cannot encode input.');
     }
   };
@@ -47,7 +47,7 @@ export default function Base64Tool() {
       setRawText(decoded);
       setIsFileMode(false);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Invalid Base64 string.');
     }
   };
@@ -201,7 +201,7 @@ export default function Base64Tool() {
         <h3 className="text-xl font-bold text-[#0d161c] mb-4">How does this work?</h3>
         <p className="text-[#5a6872] leading-relaxed mb-6">
           Base64 is an encoding scheme used to represent binary data in an ASCII string format. 
-          It's commonly used to embed images directly into HTML/CSS files, pass data safely through URLs, 
+          It&apos;s commonly used to embed images directly into HTML/CSS files, pass data safely through URLs, 
           or store complex data in JSON payloads.
         </p>
         <div className="bg-white rounded-2xl p-6 border border-[#e1e5df] shadow-sm">
