@@ -26,8 +26,8 @@ export default function JsonFormatterTool() {
       setOutput(formatted);
       setError(null);
       setErrorDetails(null);
-    } catch (err: any) {
-      const msg = err.message;
+    } catch (err) {
+      const msg = (err as Error).message;
       setError(msg);
       setOutput('');
       
@@ -70,8 +70,8 @@ export default function JsonFormatterTool() {
       const minified = JSON.stringify(parsed);
       setOutput(minified);
       setError(null);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     }
   };
 

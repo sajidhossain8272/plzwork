@@ -173,6 +173,7 @@ export const AiCaptionGenerator: React.FC = () => {
 
             {/* Image Preview */}
             {!isLoading && previewSrc && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={previewSrc}
                 alt={caption || 'Preview'}

@@ -186,7 +186,7 @@ export default function PasswordGeneratorTool() {
               Cryptographically Secure
             </h3>
             <p className="text-[#5a6872] text-sm leading-relaxed">
-              We use the Web Crypto API's <code>getRandomValues()</code> to ensure high entropy. 
+              We use the Web Crypto API&apos;s <code>getRandomValues()</code> to ensure high entropy. 
               This is far more secure than <code>Math.random()</code>, making it safe for sensitive accounts.
             </p>
           </div>

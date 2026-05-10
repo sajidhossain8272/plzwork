@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaCopy, FaTrash, FaExchangeAlt, FaFileUpload, FaCheck } from 'react-icons/fa';
 
@@ -12,7 +12,6 @@ export default function Base64Tool() {
   const [copiedRaw, setCopiedRaw] = useState(false);
   const [copiedBase64, setCopiedBase64] = useState(false);
   const [isFileMode, setIsFileMode] = useState(false);
-  const [fileName, setFileName] = useState('');
 
   // Handle Raw Text Change
   const handleRawChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
