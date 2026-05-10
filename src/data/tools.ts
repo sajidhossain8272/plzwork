@@ -100,7 +100,7 @@ export const TOOLS: ToolItem[] = [
   { id: "comp-svg-clean", name: "Clean SVG", description: "Remove unused defs and tidy SVG paths.", category: "Compress & Optimize", subCategory: "SVG", status: "Soon", href: "#", icon: FaCompress },
 
   // --- DEV TOOLS ---
-  { id: "dev-fmt-json", name: "JSON formatter", description: "Format and validate JSON payloads.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft, isPopular: true },
+  { id: "dev-fmt-json", name: "JSON formatter", description: "Format and validate JSON payloads.", category: "Dev Tools", subCategory: "Formatting", status: "Live", href: "/json-formatter", icon: FaAlignLeft, isPopular: true },
   { id: "dev-fmt-xml", name: "XML formatter", description: "Pretty-print XML markup.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft },
   { id: "dev-fmt-sql", name: "SQL formatter", description: "Format messy SQL queries into readable lines.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft },
   { id: "dev-fmt-yaml", name: "YAML formatter", description: "Format and validate YAML files.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft },
@@ -112,7 +112,7 @@ export const TOOLS: ToolItem[] = [
   { id: "dev-enc-html", name: "HTML entity encoder", description: "Encode text into safe HTML entities.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaCode },
 
   { id: "dev-gen-uuid", name: "UUID generator", description: "Generate random UUIDs (v4) instantly.", category: "Dev Tools", subCategory: "Generation", status: "Live", href: "/uuid-generator", icon: FaFingerprint, isPopular: true },
-  { id: "dev-gen-pwd", name: "Password generator", description: "Create strong, secure random passwords.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaLock, isPopular: true },
+  { id: "dev-gen-pwd", name: "Password generator", description: "Create strong, secure random passwords.", category: "Dev Tools", subCategory: "Generators", status: "Live", href: "/password-generator", icon: FaLock, isPopular: true },
   { id: "dev-gen-api", name: "API mock generator", description: "Generate fake API responses for testing.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaCogs },
   { id: "dev-gen-fjson", name: "Fake JSON generator", description: "Create mock JSON data with a schema.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaCogs },
   { id: "dev-gen-lorem", name: "Lorem ipsum", description: "Generate placeholder text paragraphs.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaAlignLeft },

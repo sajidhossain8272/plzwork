@@ -9,7 +9,10 @@ import {
   FaSortAlphaDown, 
   FaSortAlphaUp, 
   FaFolder, 
-  FaChevronRight 
+  FaChevronRight,
+  FaCheckCircle,
+  FaClock,
+  FaCrown 
 } from 'react-icons/fa';
 import { CATEGORIES, TOOLS } from '../../data/tools';
 
@@ -51,35 +54,7 @@ export const ToolsExplorer: React.FC = () => {
       {/* Sidebar - Navigation Pane */}
       <div className="w-full md:w-64 bg-[#f8f9f7] border-r border-[#dfe5dc] flex flex-col h-full overflow-y-auto">
         
-        {/* Filter Section */}
-        <div className="p-4 border-b border-[#dfe5dc]">
-          <h2 className="text-sm font-semibold text-[#5a6872] uppercase tracking-wider mb-4">Filters</h2>
-          <div className="space-y-1">
-            {['Live', 'Soon', 'Pro'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(statusFilter === status ? null : status)}
-                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all ${
-                  statusFilter === status 
-                    ? status === 'Live' ? 'bg-green-100 text-green-700 font-bold border border-green-200' :
-                      status === 'Pro' ? 'bg-purple-100 text-purple-700 font-bold border border-purple-200' :
-                      'bg-gray-200 text-gray-700 font-bold border border-gray-300'
-                    : 'text-[#5a6872] hover:bg-[#edf0eb] border border-transparent'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${
-                    status === 'Live' ? 'bg-green-500' :
-                    status === 'Pro' ? 'bg-purple-500' :
-                    'bg-gray-400'
-                  }`} />
-                  {status}
-                </div>
-                {statusFilter === status && <span className="text-[10px]">ACTIVE</span>}
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         <div className="p-4 border-b border-[#dfe5dc]">
           <h2 className="text-sm font-semibold text-[#5a6872] uppercase tracking-wider">Quick Access</h2>
@@ -142,6 +117,29 @@ export const ToolsExplorer: React.FC = () => {
             </div>
             
             <div className="flex items-center border border-[#dfe5dc] rounded-lg overflow-hidden bg-[#f8f9f7]">
+              {/* Status Filters as Icons */}
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'Live' ? null : 'Live')}
+                className={`p-2 transition border-r border-[#dfe5dc] ${statusFilter === 'Live' ? 'bg-green-100 text-green-600' : 'text-[#5a6872] hover:bg-[#edf0eb]'}`}
+                title="Filter Live"
+              >
+                <FaCheckCircle />
+              </button>
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'Soon' ? null : 'Soon')}
+                className={`p-2 transition border-r border-[#dfe5dc] ${statusFilter === 'Soon' ? 'bg-gray-200 text-gray-600' : 'text-[#5a6872] hover:bg-[#edf0eb]'}`}
+                title="Filter Soon"
+              >
+                <FaClock />
+              </button>
+              <button 
+                onClick={() => setStatusFilter(statusFilter === 'Pro' ? null : 'Pro')}
+                className={`p-2 transition border-r border-[#dfe5dc] ${statusFilter === 'Pro' ? 'bg-purple-100 text-purple-600' : 'text-[#5a6872] hover:bg-[#edf0eb]'}`}
+                title="Filter Pro"
+              >
+                <FaCrown />
+              </button>
+
               <button 
                 onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                 className="p-2 text-[#5a6872] hover:text-[#0d161c] hover:bg-[#edf0eb] transition"
