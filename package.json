@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^2.0.1",
     "@heroicons/react": "^2.2.0",
     "file-saver": "^2.0.5",
     "heic2any": "^0.0.4",

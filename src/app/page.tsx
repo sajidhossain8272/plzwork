@@ -5,6 +5,9 @@ import {
 } from "react-icons/fa";
 
 import { ToolsExplorer } from "./components/ToolsExplorer";
+import HeroBadge from "./components/HeroBadge";
+import HeroTerminal from "./components/HeroTerminal";
+import PricingSection from "./components/PricingSection";
 
 export default function Home() {
   return (
@@ -12,12 +15,9 @@ export default function Home() {
       <section className="px-4 pb-12 pt-28 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-[#d9ded8] bg-white px-4 py-2 text-sm font-semibold text-[#26323a]">
-              <span className="h-2 w-2 rounded-full bg-[#52c41a]" />
-              Tools that actually work
-            </div>
+            <HeroBadge />
             <h1 className="text-5xl font-semibold leading-tight tracking-normal text-[#0d161c] sm:text-6xl lg:text-7xl">
-              Plzwork builds useful products for everyday creative work.
+              Plzwork: Just a bunch of free tools.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#51606a]">
               Quick Convert is now a product of Plzwork, alongside focused tools
@@ -40,15 +40,8 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-xl">
-            <Image
-              src="/plzwork-logo.png"
-              alt="Plzwork logo"
-              width={1200}
-              height={1200}
-              priority
-              className="h-auto w-full rounded-[28px] border border-[#e1e5df] bg-white shadow-sm"
-            />
+          <div className="relative ml-auto w-full max-w-xl">
+            <HeroTerminal />
           </div>
         </div>
       </section>
@@ -75,6 +68,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PricingSection />
     </div>
   );
 }

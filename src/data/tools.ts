@@ -105,8 +105,8 @@ export const TOOLS: ToolItem[] = [
   { id: "dev-fmt-yaml", name: "YAML formatter", description: "Format and validate YAML files.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft },
   { id: "dev-fmt-md", name: "Markdown preview", description: "Write and preview Markdown in real-time.", category: "Dev Tools", subCategory: "Formatting", status: "Soon", href: "#", icon: FaAlignLeft },
 
-  { id: "dev-enc-base64", name: "Base64 encode/decode", description: "Convert text or files to and from Base64.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaExchangeAlt, isPopular: true },
-  { id: "dev-enc-url", name: "URL encode/decode", description: "Escape or unescape URL strings safely.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaLink },
+  { id: "dev-enc-base64", name: "Base64 encode/decode", description: "Convert text or files to and from Base64.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Live", href: "/base64-encoder-decoder", icon: FaExchangeAlt, isPopular: true },
+  { id: "dev-enc-url", name: "URL encode/decode", description: "Escape or unescape URL strings safely.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Live", href: "/url-encoder-decoder", icon: FaLink },
   { id: "dev-enc-jwt", name: "JWT decoder", description: "Decode and inspect JSON Web Tokens locally.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaLock, isPopular: true },
   { id: "dev-enc-html", name: "HTML entity encoder", description: "Encode text into safe HTML entities.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaCode },
 

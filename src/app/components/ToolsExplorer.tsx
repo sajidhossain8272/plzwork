@@ -19,6 +19,7 @@ type SortBy = 'name' | 'status';
 
 export const ToolsExplorer: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('details');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -27,9 +28,10 @@ export const ToolsExplorer: React.FC = () => {
   const filteredTools = useMemo(() => {
     return TOOLS.filter(tool => {
       const matchesCategory = activeCategory ? tool.category === CATEGORIES.find(c => c.id === activeCategory)?.name : true;
+      const matchesStatus = statusFilter ? tool.status === statusFilter : true;
       const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             tool.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesStatus && matchesSearch;
     }).sort((a, b) => {
       let comparison = 0;
       if (sortBy === 'name') {
@@ -39,7 +41,7 @@ export const ToolsExplorer: React.FC = () => {
       }
       return sortOrder === 'asc' ? comparison : -comparison;
     });
-  }, [activeCategory, searchQuery, sortBy, sortOrder]);
+  }, [activeCategory, statusFilter, searchQuery, sortBy, sortOrder]);
 
   const activeCategoryName = activeCategory ? CATEGORIES.find(c => c.id === activeCategory)?.name : 'All Tools';
 
@@ -48,6 +50,37 @@ export const ToolsExplorer: React.FC = () => {
       
       {/* Sidebar - Navigation Pane */}
       <div className="w-full md:w-64 bg-[#f8f9f7] border-r border-[#dfe5dc] flex flex-col h-full overflow-y-auto">
+        
+        {/* Filter Section */}
+        <div className="p-4 border-b border-[#dfe5dc]">
+          <h2 className="text-sm font-semibold text-[#5a6872] uppercase tracking-wider mb-4">Filters</h2>
+          <div className="space-y-1">
+            {['Live', 'Soon', 'Pro'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(statusFilter === status ? null : status)}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-all ${
+                  statusFilter === status 
+                    ? status === 'Live' ? 'bg-green-100 text-green-700 font-bold border border-green-200' :
+                      status === 'Pro' ? 'bg-purple-100 text-purple-700 font-bold border border-purple-200' :
+                      'bg-gray-200 text-gray-700 font-bold border border-gray-300'
+                    : 'text-[#5a6872] hover:bg-[#edf0eb] border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${
+                    status === 'Live' ? 'bg-green-500' :
+                    status === 'Pro' ? 'bg-purple-500' :
+                    'bg-gray-400'
+                  }`} />
+                  {status}
+                </div>
+                {statusFilter === status && <span className="text-[10px]">ACTIVE</span>}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="p-4 border-b border-[#dfe5dc]">
           <h2 className="text-sm font-semibold text-[#5a6872] uppercase tracking-wider">Quick Access</h2>
         </div>

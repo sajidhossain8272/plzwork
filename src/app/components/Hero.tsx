@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import QuickConvertTerminal from "./QuickConvertTerminal";
 
 interface HeroProps {
   onConvertNowClick: () => void;
@@ -22,22 +22,29 @@ const Hero: React.FC<HeroProps> = ({ onConvertNowClick }) => {
               Convert WebP, JPEG, PNG, HEIC, and HEIF images with a clean,
               focused workflow inspired by the calm surfaces of modern AI tools.
             </p>
-            <button
-              className="rounded-lg bg-[#0e171d] px-6 py-3 font-semibold text-white transition hover:bg-[#1d2a32]"
-              onClick={onConvertNowClick}
-            >
-              Start converting
-            </button>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <button
+                className="rounded-lg bg-[#0e171d] px-6 py-3 font-semibold text-white transition hover:bg-[#1d2a32]"
+                onClick={onConvertNowClick}
+              >
+                Start converting
+              </button>
+              <div className="relative group/doc">
+                <button
+                  className="rounded-lg border border-[#cfd7cf] bg-white px-6 py-3 font-semibold text-[#142027] transition hover:border-[#9fb89d]"
+                >
+                  Read Documentation
+                </button>
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#0e171d] text-white text-[11px] font-medium rounded-lg opacity-0 group-hover/doc:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap shadow-xl border border-white/10 flex items-center gap-1.5 translate-y-2 group-hover/doc:translate-y-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+                  The writer is sleeping, guide will be available soon! 💤
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#0e171d] rotate-45 border-r border-b border-white/10"></div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex justify-center md:justify-end">
-            <Image
-              src="/plzwork-quick-convert.png"
-              alt="Plzwork Quick Convert"
-              width={1200}
-              height={1200}
-              priority
-              className="h-auto w-full max-w-md rounded-lg border border-[#e5e9e2] bg-white shadow-sm"
-            />
+            <QuickConvertTerminal />
           </div>
         </div>
       </section>
