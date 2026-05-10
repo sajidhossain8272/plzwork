@@ -94,7 +94,6 @@ export default function Base64Tool() {
     setRawText('');
     setBase64Text('');
     setIsFileMode(false);
-    setFileName('');
     setError(null);
   };
 
