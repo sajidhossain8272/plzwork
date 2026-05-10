@@ -24,6 +24,7 @@ import {
   FaFont,
   FaPalette,
   FaCogs,
+  FaFingerprint,
 } from "react-icons/fa";
 
 export type ToolStatus = "Live" | "Soon" | "Pro";
@@ -110,7 +111,7 @@ export const TOOLS: ToolItem[] = [
   { id: "dev-enc-jwt", name: "JWT decoder", description: "Decode and inspect JSON Web Tokens locally.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaLock, isPopular: true },
   { id: "dev-enc-html", name: "HTML entity encoder", description: "Encode text into safe HTML entities.", category: "Dev Tools", subCategory: "Encode/Decode", status: "Soon", href: "#", icon: FaCode },
 
-  { id: "dev-gen-uuid", name: "UUID generator", description: "Generate random v4 UUIDs in bulk.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaCogs, isPopular: true },
+  { id: "dev-gen-uuid", name: "UUID generator", description: "Generate random UUIDs (v4) instantly.", category: "Dev Tools", subCategory: "Generation", status: "Live", href: "/uuid-generator", icon: FaFingerprint, isPopular: true },
   { id: "dev-gen-pwd", name: "Password generator", description: "Create strong, secure random passwords.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaLock, isPopular: true },
   { id: "dev-gen-api", name: "API mock generator", description: "Generate fake API responses for testing.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaCogs },
   { id: "dev-gen-fjson", name: "Fake JSON generator", description: "Create mock JSON data with a schema.", category: "Dev Tools", subCategory: "Generators", status: "Soon", href: "#", icon: FaCogs },
