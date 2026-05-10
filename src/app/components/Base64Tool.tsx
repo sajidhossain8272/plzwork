@@ -57,7 +57,6 @@ export default function Base64Tool() {
     if (!file) return;
 
     setIsFileMode(true);
-    setFileName(file.name);
     
     const reader = new FileReader();
     reader.onload = () => {
