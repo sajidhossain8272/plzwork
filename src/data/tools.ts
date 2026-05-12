@@ -64,10 +64,10 @@ export const TOOLS: ToolItem[] = [
   { id: "img-ico", name: "ICO Converter", description: "Create favicon ICO files from images.", category: "Convert Tools", subCategory: "Images", status: "Soon", href: "#", icon: FaImage },
   { id: "img-gif", name: "GIF Converter", description: "Convert video to GIF or GIF to video.", category: "Convert Tools", subCategory: "Images", status: "Soon", href: "#", icon: FaImage },
 
-  { id: "pdf-img-pdf", name: "Image to PDF", description: "Combine images into a single PDF document.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf },
+  { id: "pdf-img-pdf", name: "Image to PDF", description: "Combine images into a single PDF document.", category: "Convert Tools", subCategory: "PDF", status: "Live", href: "/image-to-pdf", icon: FaFilePdf },
   { id: "pdf-pdf-img", name: "PDF to Image", description: "Extract PDF pages into JPG or PNG images.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf },
-  { id: "pdf-merge", name: "Merge PDF", description: "Combine multiple PDFs into one.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf, isPopular: true },
-  { id: "pdf-split", name: "Split PDF", description: "Extract pages from your PDF file.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf },
+  { id: "pdf-merge", name: "Merge PDF", description: "Combine multiple PDFs into one.", category: "Convert Tools", subCategory: "PDF", status: "Live", href: "/pdf-merge", icon: FaFilePdf, isPopular: true },
+  { id: "pdf-split", name: "Split PDF", description: "Extract pages from your PDF file.", category: "Convert Tools", subCategory: "PDF", status: "Live", href: "/pdf-split", icon: FaFilePdf },
   { id: "pdf-compress", name: "Compress PDF", description: "Reduce PDF file size without losing quality.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf },
   { id: "pdf-rotate", name: "Rotate PDF", description: "Rotate and save PDF pages permanently.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaFilePdf },
   { id: "pdf-unlock", name: "Unlock PDF", description: "Remove password protection from PDFs.", category: "Convert Tools", subCategory: "PDF", status: "Soon", href: "#", icon: FaLock },
