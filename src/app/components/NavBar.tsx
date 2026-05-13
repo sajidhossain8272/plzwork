@@ -30,7 +30,15 @@ export default function NavBar() {
   const linkInactive = 'text-[#5a6872] hover:bg-black/5 hover:text-[#0d161c]';
 
   // Navigation items
-  const links = [
+  interface NavLink {
+    href: string;
+    label: string;
+    active: boolean;
+    target?: string;
+    rel?: string;
+  }
+
+  const links: NavLink[] = [
     { href: '/',                     label: 'App Store',           active: pathname === '/' },
     { 
       href: activeTool ? activeTool.href : '/quick-convert',        
@@ -39,7 +47,13 @@ export default function NavBar() {
     },
     { href: '#pricing',              label: 'Pricing',             active: false },
     { href: '#api',                  label: 'API Docs',            active: false },
-    { href: 'https://github.com/sajidhossain8272/', label: 'Contact', active: false }
+    {
+      href: 'https://github.com/sajidhossain8272/',
+      label: 'Contact',
+      active: false,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    }
   ];
 
   return (
@@ -83,8 +97,8 @@ export default function NavBar() {
               <Link
                 key={idx}
                 href={link.href}
-                target={link.label === 'Contact' ? '_blank' : undefined}
-                rel={link.label === 'Contact' ? 'noopener noreferrer' : undefined}
+                target={link.target}
+                rel={link.rel}
                 className={`${linkBase} ${link.active ? linkActive : linkInactive}`}
               >
                 {link.label}
@@ -120,8 +134,8 @@ export default function NavBar() {
               <Link
                 key={idx}
                 href={link.href}
-                target={link.label === 'Contact' ? '_blank' : undefined}
-                rel={link.label === 'Contact' ? 'noopener noreferrer' : undefined}
+                target={link.target}
+                rel={link.rel}
                 onClick={() => setMenuOpen(false)}
                 className={`text-2xl font-bold tracking-tight px-6 py-3 rounded-2xl transition-all ${
                   link.active ? 'bg-[#0d161c] text-white shadow-lg' : 'text-[#5a6872] hover:bg-white hover:text-[#0d161c] hover:shadow-sm'
