@@ -45,6 +45,7 @@ export default function NavBar() {
       label: activeTool ? activeTool.name : 'Quick Convert',       
       active: pathname === (activeTool ? activeTool.href : '/quick-convert') 
     },
+    { href: '/blogs',                label: 'Blogs',               active: pathname.startsWith('/blogs') },
     { href: '#pricing',              label: 'Pricing',             active: false },
     { href: '#api',                  label: 'API Docs',            active: false },
     {
