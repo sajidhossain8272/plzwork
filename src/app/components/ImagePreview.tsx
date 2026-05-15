@@ -24,21 +24,8 @@ export default function ImagePreview({
     if (!converted) return;
 
     try {
-      let blob;
-      if (converted.startsWith("data:") && converted.includes(",")) {
-        const parts = converted.split(",");
-        const byteString = atob(parts[1]);
-        const mimeString = parts[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i++) {
-          ia[i] = byteString.charCodeAt(i);
-        }
-        blob = new Blob([ab], { type: mimeString });
-      } else {
-        const response = await fetch(converted);
-        blob = await response.blob();
-      }
+      const response = await fetch(converted);
+      const blob = await response.blob();
       const filename = `converted-${quality}q-${resolution}.${format}`;
       saveAs(blob, filename);
     } catch (error) {

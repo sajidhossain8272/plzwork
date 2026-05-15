@@ -189,15 +189,8 @@ export default function Home() {
    * Helper to download a single base64 image as a file.
    */
   const downloadSingleImage = async (dataUrl: string, fileName: string) => {
-    const parts = dataUrl.split(",");
-    const byteString = atob(parts[1]);
-    const mimeString = parts[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    const blob = new Blob([ab], { type: mimeString });
+    const response = await fetch(dataUrl);
+    const blob = await response.blob();
     saveAs(blob, fileName);
   };
 
