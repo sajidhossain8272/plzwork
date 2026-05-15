@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { BLOG_POSTS } from '@/data/blogs';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight, FaCalendarAlt, FaUserEdit } from 'react-icons/fa';
 
 export const metadata: Metadata = {
   title: 'Plzwork Blog - Insights on Web Development & Productivity',
@@ -12,46 +12,75 @@ export const metadata: Metadata = {
 export default function BlogsPage() {
   return (
     <div className="min-h-screen bg-[#f7f7f4] pt-32 pb-24 text-[#0d161c]">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Plzwork Blog</h1>
-          <p className="mt-4 text-lg text-[#5a6872]">
-            Insights, tutorials, and updates on building tools that actually work.
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        {/* Header Section */}
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl mb-6">
+            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4da72a] to-[#2e6619]">Plzwork</span> Blog
+          </h1>
+          <p className="text-xl text-[#5a6872] leading-relaxed">
+            Deep dives, technical insights, and updates on building secure, client-side tools that actually work.
           </p>
         </div>
 
-        <div className="space-y-8">
+        {/* Blog Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {BLOG_POSTS.map((post) => (
             <article
               key={post.slug}
-              className="group relative flex flex-col items-start justify-between rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md sm:p-8"
+              className="group flex flex-col justify-between bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100"
             >
-              <div className="flex items-center gap-x-4 text-xs">
-                <time dateTime={post.date} className="text-gray-500">
-                  {new Date(post.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </time>
-              </div>
-              <div className="group relative">
-                <h3 className="mt-3 text-xl font-semibold leading-6 text-gray-900 group-hover:text-[#4da72a]">
+              <div>
+                {/* Meta Info */}
+                <div className="flex items-center gap-x-4 text-xs mb-4 text-gray-500 font-medium">
+                  <div className="flex items-center gap-1.5">
+                    <FaCalendarAlt className="text-gray-400" />
+                    <time dateTime={post.date}>
+                      {new Date(post.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </time>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <FaUserEdit className="text-gray-400" />
+                    <span>{post.author}</span>
+                  </div>
+                </div>
+
+                {/* Title & Description */}
+                <h3 className="text-2xl font-bold leading-tight text-gray-900 mb-4 group-hover:text-[#4da72a] transition-colors">
                   <Link href={`/blogs/${post.slug}`}>
                     <span className="absolute inset-0" />
                     {post.title}
                   </Link>
                 </h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
+                <p className="line-clamp-4 text-base leading-relaxed text-gray-600 mb-6">
                   {post.description}
                 </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {post.keywords.slice(0, 2).map(tag => (
+                    <span key={tag} className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 uppercase tracking-wider">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="mt-6 flex items-center gap-2 text-sm font-medium text-[#0e171d]">
-                Read article <FaArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+
+              {/* Read More Link */}
+              <div className="pt-6 border-t border-gray-100 mt-auto">
+                <div className="inline-flex items-center text-sm font-bold text-[#0e171d] group-hover:text-[#4da72a] transition-colors">
+                  Read Full Article <FaArrowRight className="ml-2 h-4 w-4 transform transition-transform group-hover:translate-x-2" />
+                </div>
               </div>
             </article>
           ))}
         </div>
+
       </div>
     </div>
   );
