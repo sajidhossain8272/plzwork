@@ -20,7 +20,7 @@
     "heic2any": "^0.0.4",
     "jszip": "^3.10.1",
     "libheif-js": "^1.18.2",
-    "next": "15.5.15",
+    "next": "^15.5.15",
     "next-sitemap": "^4.2.3",
     "nextjs-google-analytics": "^2.3.7",
     "pdf-lib": "^1.17.1",
