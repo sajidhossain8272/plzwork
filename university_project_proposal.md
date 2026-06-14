@@ -1,4 +1,4 @@
-# Final Year Project Proposal
+#  Project Proposal
 ## Project Title: Plzwork – A Privacy-First, Client-Side Utility and AI Workflow Suite
 
 ### 1. Project Overview & Abstract
