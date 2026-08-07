@@ -45,20 +45,14 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-6 tracking-wide">Products</h4>
             <ul className="space-y-4 text-sm text-[#8c9ba5]">
-              <li><Link href="/" className="hover:text-white transition-colors">App Store</Link></li>
-              <li><Link href="/quick-convert" className="hover:text-white transition-colors">Quick Convert</Link></li>
-              <li><Link href="/base64-encoder-decoder" className="hover:text-white transition-colors">Base64 Encoder</Link></li>
-              <li><Link href="/ai-alt-tag-generator" className="hover:text-white transition-colors">AI Alt-Text</Link></li>
+              <li><Link href="/" className="hover:text-white transition-colors">Quick Convert</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-white mb-6 tracking-wide">Resources</h4>
             <ul className="space-y-4 text-sm text-[#8c9ba5]">
-              <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link href="#api" className="hover:text-white transition-colors">API Documentation</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Community</Link></li>
+              <li><a href="https://github.com/sajidhossain8272/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub Repository</a></li>
             </ul>
           </div>
 
@@ -67,7 +61,6 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-[#8c9ba5]">
               <li><a href="/Quick Convert - Privacy Policy.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</a></li>
               <li><a href="/Quick Convert - Terms and Conditions.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
 

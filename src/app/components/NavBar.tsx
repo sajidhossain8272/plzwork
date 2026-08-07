@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import { TOOLS } from '@/data/tools';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -20,9 +19,6 @@ export default function NavBar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Find active tool from path
-  const activeTool = TOOLS.find(t => t.href === pathname);
 
   // Floating Pill Design Base
   const linkBase     = 'px-5 py-2.5 font-medium rounded-full transition-all duration-300 text-sm tracking-wide';
@@ -39,15 +35,7 @@ export default function NavBar() {
   }
 
   const links: NavLink[] = [
-    { href: '/',                     label: 'App Store',           active: pathname === '/' },
-    { 
-      href: activeTool ? activeTool.href : '/quick-convert',        
-      label: activeTool ? activeTool.name : 'Quick Convert',       
-      active: pathname === (activeTool ? activeTool.href : '/quick-convert') 
-    },
-    { href: '/blogs',                label: 'Blogs',               active: pathname.startsWith('/blogs') },
-    { href: '#pricing',              label: 'Pricing',             active: false },
-    { href: '#api',                  label: 'API Docs',            active: false },
+    { href: '/', label: 'Quick Convert', active: pathname === '/' || pathname === '/quick-convert' },
     {
       href: 'https://github.com/sajidhossain8272/',
       label: 'Contact',
@@ -56,6 +44,7 @@ export default function NavBar() {
       rel: 'noopener noreferrer'
     }
   ];
+
 
   return (
     <>

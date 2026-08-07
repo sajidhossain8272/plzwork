@@ -15,9 +15,9 @@ const geistSans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Plzwork - Tools That Actually Work",
+  title: "Quick Convert - Fast, Secure & Private Image Converter",
   description:
-    "Plzwork builds useful design, development, AI, productivity, and file conversion tools including Quick Convert.",
+    "Quick Convert is a high-performance, client-side image converter supporting WebP, JPEG, PNG, HEIC, and HEIF. Privacy-first image processing directly in your browser.",
   keywords: [
     "image conversion",
     "jpg to webp",

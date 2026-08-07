@@ -3,36 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "node --test 'src/**/*.test.ts'"
+    "dev": "npx next dev --turbopack",
+    "build": "npx next build",
+    "start": "npx next start",
+    "lint": "npx next lint",
+    "test": "node --test src/lib/imageUtils.test.ts"
   },
   "dependencies": {
-    "@dnd-kit/core": "^6.3.1",
-    "@dnd-kit/sortable": "^10.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "@google/genai": "^2.0.1",
     "@heroicons/react": "^2.2.0",
-    "@stripe/react-stripe-js": "^2.7.0",
-    "@stripe/stripe-js": "^3.5.0",
-    "dnd-kit": "^0.0.2",
     "file-saver": "^2.0.5",
     "heic2any": "^0.0.4",
     "jszip": "^3.10.1",
-    "libheif-js": "^1.18.2",
     "next": "^15.5.15",
-    "next-sitemap": "^4.2.3",
-    "nextjs-google-analytics": "^2.3.7",
-    "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^5.7.284",
     "react": "^19.0.0",
-    "react-compare-slider": "^3.1.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
-    "react-icons": "^5.5.0",
-    "stripe": "^14.0.0"
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
