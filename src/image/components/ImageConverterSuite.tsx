@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import {
@@ -24,6 +24,7 @@ import {
   FlipVertical,
   SunMedium,
   Layers,
+  RotateCcw,
 } from "lucide-react";
 
 import { ImageJob, ImageFormat, CompressionPreset, ResizeMode } from "../types";
@@ -54,6 +55,8 @@ export const ImageConverterSuite: React.FC = () => {
   const [previewJob, setPreviewJob] = useState<ImageJob | null>(null);
   const [isExportingAllFormats, setIsExportingAllFormats] = useState(false);
 
+  const isInitialMount = useRef(true);
+
   // Subscribe to reactive Queue Manager updates
   useEffect(() => {
     const unsubscribe = queueManager.subscribe((updatedJobs) => {
@@ -70,87 +73,10 @@ export const ImageConverterSuite: React.FC = () => {
   }, [compressionPreset]);
 
   /**
-   * Process uploaded files into queue jobs.
+   * Execute Web Worker conversion for a single job
    */
-  const processFiles = useCallback(async (files: File[]) => {
-    const newJobs: ImageJob[] = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (!file.type.startsWith("image/") && !file.name.match(/\.(heic|heif|bmp|tiff|ico)$/i)) {
-        continue;
-      }
-
-      const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-
-      // Read data URL
-      const dataUrl = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-
-      // Inspect metadata & dimensions
-      const metadata = await inspectImageFile(file, dataUrl);
-      const rec = recommendFormat(
-        metadata.mimeType.split("/")[1] || "png",
-        metadata.width,
-        metadata.height,
-        metadata.hasAlpha,
-        file.name
-      );
-
-      const job: ImageJob = {
-        id,
-        file,
-        name: file.name,
-        originalFormat: file.type.split("/")[1]?.toUpperCase() || "IMG",
-        originalSize: file.size,
-        width: metadata.width,
-        height: metadata.height,
-        aspectRatio: metadata.aspectRatio,
-        hasAlpha: metadata.hasAlpha,
-        originalDataUrl: dataUrl,
-        targetFormat: rec.recommendedFormat || globalFormat,
-        targetQuality: quality,
-        targetWidth: metadata.width,
-        targetHeight: metadata.height,
-        keepMetadata,
-        backgroundColor: metadata.hasAlpha ? backgroundColor : "transparent",
-        rotation: 0,
-        flipHorizontal: false,
-        flipVertical: false,
-        grayscale: false,
-        status: "idle",
-        progress: 0,
-      };
-
-      newJobs.push(job);
-    }
-
-    queueManager.addJobs(newJobs);
-  }, [globalFormat, quality, keepMetadata, backgroundColor]);
-
-  // Global Ctrl+V Clipboard listener for instant pasting
-  useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
-        const pastedFiles = Array.from(e.clipboardData.files);
-        processFiles(pastedFiles);
-      }
-    };
-    window.addEventListener("paste", handlePaste);
-    return () => window.removeEventListener("paste", handlePaste);
-  }, [processFiles]);
-
-  /**
-   * Convert batch jobs using Web Worker.
-   */
-  const handleConvertAll = useCallback(() => {
-    const idleJobs = jobs.filter((j) => j.status === "idle" || j.status === "error");
-    if (idleJobs.length === 0) return;
-
-    idleJobs.forEach((job) => {
+  const convertSingleJobWithWorker = useCallback(
+    (job: ImageJob, overrideFormat?: ImageFormat) => {
       queueManager.updateJob(job.id, { status: "converting", progress: 20 });
 
       const worker = new Worker(new URL("@/image/workers/imageWorker.ts", import.meta.url));
@@ -164,15 +90,20 @@ export const ImageConverterSuite: React.FC = () => {
         targetH = Math.round(job.height * scale);
       }
 
+      const fmt = overrideFormat || job.targetFormat || globalFormat;
+
       worker.postMessage({
         dataUrl: job.originalDataUrl,
-        targetFormat: job.targetFormat || globalFormat,
+        targetFormat: fmt,
         targetQuality: job.targetQuality || quality,
         targetWidth: targetW,
         targetHeight: targetH,
-        backgroundColor: job.hasAlpha && (job.targetFormat === "jpeg" || job.targetFormat === "bmp")
-          ? (job.backgroundColor !== "transparent" ? job.backgroundColor : "#ffffff")
-          : "transparent",
+        backgroundColor:
+          job.hasAlpha && (fmt === "jpeg" || fmt === "bmp")
+            ? job.backgroundColor !== "transparent"
+              ? job.backgroundColor
+              : "#ffffff"
+            : "transparent",
         rotation: job.rotation ?? rotation,
         flipHorizontal: job.flipHorizontal ?? flipHorizontal,
         flipVertical: job.flipVertical ?? flipVertical,
@@ -191,6 +122,7 @@ export const ImageConverterSuite: React.FC = () => {
           queueManager.updateJob(job.id, {
             status: "completed",
             progress: 100,
+            targetFormat: fmt,
             convertedDataUrl: converted,
             estimatedSize: size,
             savedPercentage: savedPerc,
@@ -200,8 +132,113 @@ export const ImageConverterSuite: React.FC = () => {
         }
         worker.terminate();
       };
+    },
+    [globalFormat, quality, resizeMode, resizePercent, rotation, flipHorizontal, flipVertical, grayscale]
+  );
+
+  /**
+   * Process uploaded files into queue jobs.
+   */
+  const processFiles = useCallback(
+    async (files: File[]) => {
+      const newJobs: ImageJob[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.startsWith("image/") && !file.name.match(/\.(heic|heif|bmp|tiff|ico)$/i)) {
+          continue;
+        }
+
+        const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+
+        const dataUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        });
+
+        const metadata = await inspectImageFile(file, dataUrl);
+        const rec = recommendFormat(
+          metadata.mimeType.split("/")[1] || "png",
+          metadata.width,
+          metadata.height,
+          metadata.hasAlpha,
+          file.name
+        );
+
+        const job: ImageJob = {
+          id,
+          file,
+          name: file.name,
+          originalFormat: file.type.split("/")[1]?.toUpperCase() || "IMG",
+          originalSize: file.size,
+          width: metadata.width,
+          height: metadata.height,
+          aspectRatio: metadata.aspectRatio,
+          hasAlpha: metadata.hasAlpha,
+          originalDataUrl: dataUrl,
+          targetFormat: rec.recommendedFormat || globalFormat,
+          targetQuality: quality,
+          targetWidth: metadata.width,
+          targetHeight: metadata.height,
+          keepMetadata,
+          backgroundColor: metadata.hasAlpha ? backgroundColor : "transparent",
+          rotation: 0,
+          flipHorizontal: false,
+          flipVertical: false,
+          grayscale: false,
+          status: "idle",
+          progress: 0,
+        };
+
+        newJobs.push(job);
+      }
+
+      queueManager.addJobs(newJobs);
+    },
+    [globalFormat, quality, keepMetadata, backgroundColor]
+  );
+
+  // Global Ctrl+V Clipboard listener for instant pasting
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+        const pastedFiles = Array.from(e.clipboardData.files);
+        processFiles(pastedFiles);
+      }
+    };
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [processFiles]);
+
+  /**
+   * Convert all jobs (both idle & completed) with current settings
+   */
+  const handleConvertAll = useCallback(() => {
+    if (jobs.length === 0) return;
+    jobs.forEach((job) => {
+      convertSingleJobWithWorker(job);
     });
-  }, [jobs, globalFormat, quality, resizeMode, resizePercent, rotation, flipHorizontal, flipVertical, grayscale]);
+  }, [jobs, convertSingleJobWithWorker]);
+
+  /**
+   * Instant Auto Re-convert when global settings (format, quality, rotation, flip, grayscale, scale) change
+   */
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const convertedOrIdleJobs = jobs.filter((j) => j.status === "completed" || j.status === "idle");
+    if (convertedOrIdleJobs.length > 0) {
+      convertedOrIdleJobs.forEach((job) => {
+        convertSingleJobWithWorker(job);
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalFormat, quality, resizePercent, rotation, flipHorizontal, flipVertical, grayscale, keepMetadata]);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -238,7 +275,7 @@ export const ImageConverterSuite: React.FC = () => {
 
     for (const fmt of formats) {
       const worker = new Worker(new URL("@/image/workers/imageWorker.ts", import.meta.url));
-      
+
       const convertedUrl = await new Promise<string>((resolve) => {
         worker.postMessage({
           dataUrl: job.originalDataUrl,
@@ -305,7 +342,7 @@ export const ImageConverterSuite: React.FC = () => {
           <div>
             <h2 className="text-2xl font-bold text-[#0d161c]">Browser Image Converter Studio</h2>
             <p className="text-xs text-[#5d6870] mt-0.5">
-              Multi-Format Conversion · Web Workers · Image Filters · Bulk Zip & All-Format Export
+              Instant Live Re-Conversion · Multi-Format Export · Filters · 100% Browser Privacy
             </p>
           </div>
         </div>
@@ -313,7 +350,7 @@ export const ImageConverterSuite: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#d6ded2] bg-[#f8faf7] px-3.5 py-1.5 text-xs font-semibold text-[#30404a]">
             <span className="h-2 w-2 rounded-full bg-[#42b719]" />
-            100% Client-Side Privacy
+            Live Auto Re-Convert Active
           </span>
         </div>
       </div>
@@ -333,7 +370,7 @@ export const ImageConverterSuite: React.FC = () => {
               className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
                 rotation !== 0 ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
               }`}
-              title="Rotate 90°"
+              title="Rotate 90° (Live Re-converts)"
             >
               <RotateCw className="w-3.5 h-3.5" />
               <span>{rotation}°</span>
@@ -344,7 +381,7 @@ export const ImageConverterSuite: React.FC = () => {
               className={`p-1.5 rounded-lg text-xs transition ${
                 flipHorizontal ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
               }`}
-              title="Flip Horizontal"
+              title="Flip Horizontal (Live Re-converts)"
             >
               <FlipHorizontal className="w-3.5 h-3.5" />
             </button>
@@ -354,7 +391,7 @@ export const ImageConverterSuite: React.FC = () => {
               className={`p-1.5 rounded-lg text-xs transition ${
                 flipVertical ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
               }`}
-              title="Flip Vertical"
+              title="Flip Vertical (Live Re-converts)"
             >
               <FlipVertical className="w-3.5 h-3.5" />
             </button>
@@ -364,7 +401,7 @@ export const ImageConverterSuite: React.FC = () => {
               className={`p-1.5 rounded-lg text-xs flex items-center gap-1 transition ${
                 grayscale ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
               }`}
-              title="Grayscale Filter"
+              title="Grayscale Filter (Live Re-converts)"
             >
               <SunMedium className="w-3.5 h-3.5" />
               <span>B&W</span>
@@ -585,9 +622,9 @@ export const ImageConverterSuite: React.FC = () => {
                         <select
                           value={job.targetFormat}
                           onChange={(e) => {
-                            queueManager.updateJob(job.id, {
-                              targetFormat: e.target.value as ImageFormat,
-                            });
+                            const newFmt = e.target.value as ImageFormat;
+                            queueManager.updateJob(job.id, { targetFormat: newFmt });
+                            convertSingleJobWithWorker(job, newFmt);
                           }}
                           className="bg-gray-50 border border-gray-300 text-gray-800 text-xs font-semibold rounded-lg p-1.5 focus:outline-none"
                         >
@@ -630,6 +667,13 @@ export const ImageConverterSuite: React.FC = () => {
                       {/* Actions */}
                       <td className="p-3 text-right">
                         <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => convertSingleJobWithWorker(job)}
+                            className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                            title="Re-convert image with current settings"
+                          >
+                            <RotateCcw className="w-4 h-4 text-blue-600" />
+                          </button>
                           <button
                             onClick={() => handleDownloadAllFormats(job)}
                             disabled={isExportingAllFormats}
@@ -696,7 +740,7 @@ export const ImageConverterSuite: React.FC = () => {
             ) : (
               <>
                 <Play className="w-4 h-4 text-[#42b719] fill-[#42b719]" />
-                <span>Convert All Images (Ctrl+Enter)</span>
+                <span>Re-convert All Images (Ctrl+Enter)</span>
               </>
             )}
           </button>

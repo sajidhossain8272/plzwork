@@ -7,7 +7,6 @@ import {
   ShieldCheck,
   Zap,
   Command,
-  Brain,
   Layers,
   Sparkles,
 } from "lucide-react";
@@ -18,7 +17,7 @@ interface DocumentationModalProps {
 }
 
 export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<"overview" | "privacy" | "shortcuts" | "formats" | "ai">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "privacy" | "shortcuts" | "formats">("overview");
 
   if (!isOpen) return null;
 
@@ -33,7 +32,7 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
             </div>
             <div>
               <h3 className="text-base font-bold">Quick Convert Documentation</h3>
-              <p className="text-xs text-gray-400">Complete Guide to Client-Side Image Processing & Local AI</p>
+              <p className="text-xs text-gray-400">Complete Guide to Client-Side Image Processing & Live Re-Conversion</p>
             </div>
           </div>
           <button
@@ -85,16 +84,6 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
             <Layers className="w-3.5 h-3.5" />
             <span>Supported Formats</span>
           </button>
-
-          <button
-            onClick={() => setActiveTab("ai")}
-            className={`px-3.5 py-2 rounded-xl transition flex items-center gap-2 ${
-              activeTab === "ai" ? "bg-[#42b719] text-white" : "bg-gray-800/60 text-gray-400 hover:text-white"
-            }`}
-          >
-            <Brain className="w-3.5 h-3.5" />
-            <span>Local AI Intelligence</span>
-          </button>
         </div>
 
         {/* Tab Contents */}
@@ -103,20 +92,20 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
             <div className="space-y-4">
               <h4 className="text-lg font-bold text-white">Welcome to Quick Convert by Plzwork</h4>
               <p className="leading-relaxed">
-                Quick Convert is a desktop-grade, privacy-first image conversion and optimization engine running 100% inside your browser. By utilizing HTML5 <code className="bg-gray-800 px-1 py-0.5 rounded text-green-400 font-mono">OffscreenCanvas</code> and multi-threaded Web Workers, image processing is executed directly on your device with zero server latency.
+                Quick Convert is a desktop-grade, privacy-first image conversion engine running 100% inside your browser. Utilizing HTML5 <code className="bg-gray-800 px-1 py-0.5 rounded text-green-400 font-mono">OffscreenCanvas</code> and multi-threaded Web Workers, image processing is executed directly on your device with instant live re-conversion.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                 <div className="p-4 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
                   <Zap className="w-5 h-5 text-[#42b719] mb-1" />
-                  <div className="font-bold text-white">Instant Latency</div>
-                  <div className="text-xs text-gray-400">Zero network bottleneck. Converts thousands of files locally.</div>
+                  <div className="font-bold text-white">Live Re-Conversion</div>
+                  <div className="text-xs text-gray-400">Change target format, quality, or filters to re-convert images live.</div>
                 </div>
 
                 <div className="p-4 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
                   <ShieldCheck className="w-5 h-5 text-[#42b719] mb-1" />
                   <div className="font-bold text-white">100% Private</div>
-                  <div className="text-xs text-gray-400">Your photos, screenshots, and documents never leave your computer.</div>
+                  <div className="text-xs text-gray-400">Your photos and screenshots never leave your computer.</div>
                 </div>
 
                 <div className="p-4 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
@@ -135,7 +124,7 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
                 Privacy & Client-Side Security Architecture
               </h4>
               <p className="leading-relaxed">
-                Unlike traditional online converters that upload your confidential images to remote cloud servers, Quick Convert performs all decoding, pixel transformations, resizing, compression, and encoding in your local browser memory.
+                Unlike traditional online converters that upload confidential images to remote cloud servers, Quick Convert performs all decoding, pixel transformations, resizing, compression, and encoding in your local browser memory.
               </p>
 
               <div className="p-4 bg-[#141f27] border border-gray-800 rounded-xl space-y-2">
@@ -156,7 +145,7 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
                   <kbd className="px-2.5 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-green-400">Ctrl + V</kbd>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-[#141f27] border border-gray-800 rounded-xl">
-                  <span className="font-medium text-white">Convert All Queue Items</span>
+                  <span className="font-medium text-white">Re-convert All Queue Items</span>
                   <kbd className="px-2.5 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-green-400">Ctrl + Enter</kbd>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-[#141f27] border border-gray-800 rounded-xl">
@@ -196,26 +185,6 @@ export const DocumentationModal: React.FC<DocumentationModalProps> = ({ isOpen, 
                   <div className="text-xs text-gray-400">Favicon icon format for web apps and browser tab icons.</div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {activeTab === "ai" && (
-            <div className="space-y-4">
-              <h4 className="text-lg font-bold text-white flex items-center gap-2">
-                <Brain className="w-5 h-5 text-[#42b719]" />
-                Local AI Image Intelligence
-              </h4>
-              <p className="leading-relaxed">
-                Quick Convert includes 11 specialized local intelligence capabilities that analyze your images without sending data over the network:
-              </p>
-              <ul className="list-disc list-inside space-y-1 text-xs text-gray-300 pl-2">
-                <li><strong className="text-white">Image Classifier:</strong> Detects photos, UI screenshots, documents, logos, or receipts.</li>
-                <li><strong className="text-white">Visual Quality Scorer:</strong> Measures sharpness, noise, exposure, and contrast ($0-100$).</li>
-                <li><strong className="text-white">Color Intelligence:</strong> Extracts dominant colors, accent swatches, and contrast ratios.</li>
-                <li><strong className="text-white">Compression Advisor:</strong> Predicts file size savings and quality trade-offs.</li>
-                <li><strong className="text-white">Accessibility Inspector:</strong> Verifies WCAG AA readability and contrast compliance.</li>
-                <li><strong className="text-white">Export Advisor:</strong> Tailors instant export presets (Website, Instagram, Discord).</li>
-              </ul>
             </div>
           )}
         </div>

@@ -8,7 +8,6 @@ import ConversionTable from "./components/ConversionTable";
 import { CommandPalette } from "./components/CommandPalette";
 import { HistoryDrawer } from "./components/HistoryDrawer";
 import { ImageConverterSuite } from "@/image/components/ImageConverterSuite";
-import { AIIntelligenceCard } from "./components/AIIntelligenceCard";
 
 import { CategoryType, HistoryItem } from "@/engine/types";
 import { registerAllPlugins } from "@/plugins";
@@ -47,9 +46,6 @@ export default function Home() {
       <main ref={mainRef} className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Browser Image Converter Studio */}
         <ImageConverterSuite />
-
-        {/* Local AI Image Intelligence */}
-        <AIIntelligenceCard />
       </main>
 
       <ConversionTable />
