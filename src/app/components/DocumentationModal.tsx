@@ -7,8 +7,6 @@ import {
   ShieldCheck,
   Zap,
   Command,
-  FileCode,
-  Sliders,
   Brain,
   Layers,
   Sparkles,
