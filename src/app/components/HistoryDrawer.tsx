@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { History, Pin, Trash2, X, Star } from "lucide-react";
+import { History, Pin, Trash2, X } from "lucide-react";
+
 import { historyManager } from "@/engine/history";
 import { HistoryItem } from "@/engine/types";
 import { formatNumber } from "@/lib/utils";

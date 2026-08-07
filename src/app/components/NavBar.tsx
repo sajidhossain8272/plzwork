@@ -13,7 +13,6 @@ interface NavBarProps {
 }
 
 export default function NavBar({ onOpenCommandPalette, onOpenHistory }: NavBarProps) {
-  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 

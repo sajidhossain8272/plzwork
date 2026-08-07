@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
+
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { FaCheckCircle, FaSpinner, FaHourglass, FaTrash } from "react-icons/fa";

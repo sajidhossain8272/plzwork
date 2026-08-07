@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Search, Command, ArrowRight, X, Hash, Sparkles } from "lucide-react";
 import { executeSmartSearch } from "@/engine/search";
 import { SearchResult, CategoryType, Unit } from "@/engine/types";
@@ -22,6 +22,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const handleSelect = useCallback(
+    (item: SearchResult) => {
+      if (item.type === "conversion" && item.fromUnit && item.toUnit && onSelectConversion) {
+        const match = item.title.match(/^([\d.]+)/);
+        const val = match ? parseFloat(match[1]) : 1;
+        onSelectConversion(item.fromUnit, item.toUnit, val);
+      }
+      onSelectCategory(item.category);
+      onClose();
+    },
+    [onSelectCategory, onSelectConversion, onClose]
+  );
+
   useEffect(() => {
     if (query.trim()) {
       const found = executeSmartSearch(query);
@@ -36,7 +49,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        isOpen ? onClose() : null;
+        if (isOpen) onClose();
       }
       if (e.key === "/" && !isOpen && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
         e.preventDefault();
@@ -59,19 +72,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, results, selectedIndex, onClose]);
+  }, [isOpen, results, selectedIndex, onClose, handleSelect]);
 
   if (!isOpen) return null;
-
-  const handleSelect = (item: SearchResult) => {
-    if (item.type === "conversion" && item.fromUnit && item.toUnit && onSelectConversion) {
-      const match = item.title.match(/^([\d.]+)/);
-      const val = match ? parseFloat(match[1]) : 1;
-      onSelectConversion(item.fromUnit, item.toUnit, val);
-    }
-    onSelectCategory(item.category);
-    onClose();
-  };
 
   const defaultCategories: { id: CategoryType; label: string; desc: string }[] = [
     { id: "length", label: "Length", desc: "Meters, Feet, Inches, Miles, Kilometers" },
@@ -118,7 +121,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
               <div className="px-3 py-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
                 Categories & Quick Jump
               </div>
-              {defaultCategories.map((cat, idx) => (
+              {defaultCategories.map((cat) => (
                 <div
                   key={cat.id}
                   onClick={() => {

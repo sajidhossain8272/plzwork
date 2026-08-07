@@ -11,22 +11,22 @@ beforeAll(() => {
 
 describe("Conversion Graph Engine", () => {
   it("should accurately convert meters to feet", () => {
-    const meter = PluginRegistry.findUnit("m")?.unit!;
-    const foot = PluginRegistry.findUnit("ft")?.unit!;
+    const meter = PluginRegistry.findUnit("m")!.unit;
+    const foot = PluginRegistry.findUnit("ft")!.unit;
     const res = convertUnitValue(1, meter, foot);
     expect(res).toBeCloseTo(3.28084, 4);
   });
 
   it("should accurately convert Celsius to Fahrenheit", () => {
-    const cel = PluginRegistry.findUnit("celsius")?.unit!;
-    const fah = PluginRegistry.findUnit("fahrenheit")?.unit!;
+    const cel = PluginRegistry.findUnit("celsius")!.unit;
+    const fah = PluginRegistry.findUnit("fahrenheit")!.unit;
     const res = convertUnitValue(100, cel, fah);
     expect(res).toBe(212);
   });
 
   it("should accurately convert GB to MB", () => {
-    const gb = PluginRegistry.findUnit("gb")?.unit!;
-    const mb = PluginRegistry.findUnit("mb")?.unit!;
+    const gb = PluginRegistry.findUnit("gb")!.unit;
+    const mb = PluginRegistry.findUnit("mb")!.unit;
     const res = convertUnitValue(1, gb, mb);
     expect(res).toBe(1000);
   });

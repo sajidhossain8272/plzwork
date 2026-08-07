@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ArrowLeftRight, Copy, Check, Sparkles, SlidersHorizontal, Star } from "lucide-react";
+import { ArrowLeftRight, Copy, Check, Sparkles, SlidersHorizontal } from "lucide-react";
+
 import { PluginRegistry } from "@/engine/registry";
 import { executeConversion } from "@/engine/conversionGraph";
 import { CategoryType, Unit, ConverterPlugin, ConversionResult } from "@/engine/types";

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Code, Copy, Check, RefreshCw, CheckCircle2, AlertCircle } from "lucide-react";
+import { Code, Copy, Check, RefreshCw, AlertCircle } from "lucide-react";
 
 export const DevToolsCard: React.FC = () => {
   const [tab, setTab] = useState<"base64" | "uuid" | "json">("base64");
@@ -38,8 +38,12 @@ export const DevToolsCard: React.FC = () => {
       const parsed = JSON.parse(jsonInput);
       setJsonResult(JSON.stringify(parsed, null, 2));
       setJsonError(null);
-    } catch (err: any) {
-      setJsonError(err.message || "Invalid JSON syntax.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setJsonError(err.message);
+      } else {
+        setJsonError("Invalid JSON syntax.");
+      }
       setJsonResult("");
     }
   };

@@ -2,7 +2,8 @@
 
 import React from "react";
 import QuickConvertTerminal from "./QuickConvertTerminal";
-import { Command, Sparkles, ArrowRight } from "lucide-react";
+import { Command, ArrowRight } from "lucide-react";
+
 
 interface HeroProps {
   onConvertNowClick: () => void;
