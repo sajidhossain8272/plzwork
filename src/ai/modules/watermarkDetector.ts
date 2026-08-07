@@ -1,5 +1,6 @@
 import { CapabilityHandler } from "../capabilityRegistry";
-import { CapabilityInput, WatermarkDetection } from "../types";
+import { WatermarkDetection } from "../types";
+
 
 export const watermarkDetectorHandler: CapabilityHandler<WatermarkDetection> = {
   meta: {
