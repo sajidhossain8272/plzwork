@@ -12,33 +12,94 @@ import {
   X,
   FileCheck,
   HelpCircle,
+  CheckCircle2,
+  MousePointerClick,
 } from "lucide-react";
 
 import { AIRuntime } from "@/ai/aiRuntime";
-import { AIAnalysisResult } from "@/ai/types";
+import { AIAnalysisResult, ExportProfile } from "@/ai/types";
+import { queueManager } from "@/image/queue/queueManager";
+import { ImageJob, ImageFormat } from "@/image/types";
 
 export const AIIntelligenceCard: React.FC = () => {
   const [analysis, setAnalysis] = useState<AIAnalysisResult | null>(null);
   const [showDeveloperMode, setShowDeveloperMode] = useState(false);
   const [showUsageGuide, setShowUsageGuide] = useState(false);
+  const [appliedFeedback, setAppliedFeedback] = useState<string | null>(null);
+  const [activeJob, setActiveJob] = useState<ImageJob | null>(null);
 
+  // Subscribe to reactive Queue Manager updates
   useEffect(() => {
-    AIRuntime.analyzeImage({
-      imageId: "img-sample-1",
-      filename: "screenshot_hero_banner.png",
-      mimeType: "image/png",
-      dataUrl: "data:image/png;base64,",
-      width: 1920,
-      height: 1080,
-      sizeBytes: 1240000,
-      hasAlpha: true,
-    }).then((res) => setAnalysis(res));
+    const unsub = queueManager.subscribe((jobs) => {
+      const targetJob = jobs.length > 0 ? jobs[jobs.length - 1] : null;
+      setActiveJob(targetJob);
+
+      if (targetJob) {
+        AIRuntime.analyzeImage({
+          imageId: targetJob.id,
+          filename: targetJob.name,
+          mimeType: targetJob.file.type || `image/${targetJob.originalFormat.toLowerCase()}`,
+          dataUrl: targetJob.originalDataUrl,
+          width: targetJob.width,
+          height: targetJob.height,
+          sizeBytes: targetJob.originalSize,
+          hasAlpha: targetJob.hasAlpha,
+        }).then((res) => setAnalysis(res));
+      } else {
+        // Fallback sample analysis
+        AIRuntime.analyzeImage({
+          imageId: "img-sample-1",
+          filename: "screenshot_hero_banner.png",
+          mimeType: "image/png",
+          dataUrl: "data:image/png;base64,",
+          width: 1920,
+          height: 1080,
+          sizeBytes: 1240000,
+          hasAlpha: true,
+        }).then((res) => setAnalysis(res));
+      }
+    });
+    return () => unsub();
   }, []);
+
+  /**
+   * Apply Tailored Export Profile to conversion queue
+   */
+  const handleApplyExportProfile = (prof: ExportProfile) => {
+    const fmt = prof.format.toLowerCase() as ImageFormat;
+    queueManager.applyProfile(fmt, prof.width, prof.height, prof.quality);
+    setAppliedFeedback(`Applied "${prof.target.replace("_", " ")}" profile (${fmt.toUpperCase()}, ${prof.width}x${prof.height}px, ${prof.quality}% quality)`);
+    setTimeout(() => setAppliedFeedback(null), 3500);
+  };
+
+  /**
+   * Apply Compression Advisor recommendation to conversion queue
+   */
+  const handleApplyCompressionAdvisor = () => {
+    if (!analysis) return;
+    const fmt = analysis.compression.recommendedFormat.toLowerCase() as ImageFormat;
+    queueManager.applyProfile(fmt, undefined, undefined, 85);
+    setAppliedFeedback(`Applied Recommended Format (${fmt.toUpperCase()} @ 85% Quality)`);
+    setTimeout(() => setAppliedFeedback(null), 3500);
+  };
 
   if (!analysis) return null;
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-[#dde4da] shadow-sm p-6 sm:p-8 space-y-6 mt-10">
+    <div className="w-full bg-white rounded-2xl border border-[#dde4da] shadow-sm p-6 sm:p-8 space-y-6 mt-10 relative">
+      {/* Feedback Toast */}
+      {appliedFeedback && (
+        <div className="bg-[#0d161c] text-[#42b719] border border-[#42b719]/40 px-4 py-2.5 rounded-xl text-xs font-bold shadow-xl flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#42b719]" />
+            <span>{appliedFeedback}</span>
+          </div>
+          <button onClick={() => setAppliedFeedback(null)} className="text-gray-400 hover:text-white ml-3">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-3">
@@ -46,9 +107,16 @@ export const AIIntelligenceCard: React.FC = () => {
             <Brain className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-[#0d161c]">Local AI Image Intelligence</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-[#0d161c]">Local AI Image Intelligence</h2>
+              {activeJob && (
+                <span className="px-2.5 py-0.5 rounded-full bg-[#42b719]/10 text-[#42b719] text-[11px] font-bold">
+                  Analyzing: {activeJob.name}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-[#5d6870] mt-0.5">
-              11 Distributed Local Capabilities · 100% Privacy Preserved · Perceptual Hashing & Computer Vision
+              11 Distributed Local Capabilities · 100% Privacy Preserved · Click any AI card to apply settings
             </p>
           </div>
         </div>
@@ -114,9 +182,14 @@ export const AIIntelligenceCard: React.FC = () => {
             {analysis.colorPalette.paletteHex.map((hex, idx) => (
               <div
                 key={idx}
-                className="w-7 h-7 rounded-lg border border-gray-300 shadow-2xs"
+                onClick={() => {
+                  navigator.clipboard.writeText(hex);
+                  setAppliedFeedback(`Copied color ${hex} to clipboard!`);
+                  setTimeout(() => setAppliedFeedback(null), 2500);
+                }}
+                className="w-7 h-7 rounded-lg border border-gray-300 shadow-2xs cursor-pointer hover:scale-110 transition"
                 style={{ backgroundColor: hex }}
-                title={hex}
+                title={`Click to copy ${hex}`}
               />
             ))}
           </div>
@@ -125,14 +198,20 @@ export const AIIntelligenceCard: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 4: Compression Advisor */}
-        <div className="p-4 bg-[#f8faf7] border border-[#e2e8e0] rounded-xl space-y-2">
+        {/* Card 4: Compression Advisor (Interactive Clickable) */}
+        <div
+          onClick={handleApplyCompressionAdvisor}
+          className="p-4 bg-[#f8faf7] border border-[#e2e8e0] hover:border-[#42b719] rounded-xl space-y-2 cursor-pointer group transition shadow-2xs hover:shadow-md"
+        >
           <div className="flex items-center justify-between text-xs font-bold text-[#0d161c]">
-            <span>Compression Advisor</span>
-            <Zap className="w-4 h-4 text-[#42b719]" />
+            <span className="group-hover:text-[#42b719] transition">Compression Advisor</span>
+            <Zap className="w-4 h-4 text-[#42b719] group-hover:scale-110 transition" />
           </div>
-          <div className="text-lg font-extrabold text-gray-900">
-            {analysis.compression.recommendedFormat.toUpperCase()}
+          <div className="text-lg font-extrabold text-gray-900 group-hover:text-[#42b719] transition flex items-center justify-between">
+            <span>{analysis.compression.recommendedFormat.toUpperCase()}</span>
+            <span className="text-xs text-gray-400 font-normal group-hover:text-[#42b719] flex items-center gap-1">
+              Apply <MousePointerClick className="w-3 h-3" />
+            </span>
           </div>
           <div className="text-xs text-[#42b719] font-bold">
             Saved ~{analysis.compression.savedPercentage}% Bandwidth
@@ -141,19 +220,30 @@ export const AIIntelligenceCard: React.FC = () => {
         </div>
       </div>
 
-      {/* Export Profiles */}
+      {/* Interactive Tailored Export Profiles */}
       <div className="space-y-3 pt-2">
-        <div className="text-xs font-bold text-[#0d161c] uppercase tracking-wider flex items-center gap-2">
-          <FileCheck className="w-4 h-4 text-[#42b719]" />
-          <span>Tailored Export Profiles</span>
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-bold text-[#0d161c] uppercase tracking-wider flex items-center gap-2">
+            <FileCheck className="w-4 h-4 text-[#42b719]" />
+            <span>Tailored Export Profiles (Click Profile to Apply to Converter)</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {analysis.exportProfiles.map((prof) => (
-            <div key={prof.id} className="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-1">
+            <div
+              key={prof.id}
+              onClick={() => handleApplyExportProfile(prof)}
+              className="p-4 bg-gray-50 border border-gray-200 hover:border-[#42b719] hover:bg-[#42b719]/5 rounded-xl space-y-1.5 cursor-pointer group transition shadow-2xs hover:shadow-md"
+            >
               <div className="flex items-center justify-between text-xs font-bold text-gray-900">
-                <span className="capitalize">{prof.target.replace("_", " ")}</span>
-                <span className="font-mono text-[#42b719]">{prof.format.toUpperCase()}</span>
+                <span className="capitalize group-hover:text-[#42b719] transition flex items-center gap-1.5">
+                  {prof.target.replace("_", " ")}
+                  <MousePointerClick className="w-3 h-3 text-[#42b719] opacity-0 group-hover:opacity-100 transition" />
+                </span>
+                <span className="font-mono text-[#42b719] bg-[#42b719]/10 px-2 py-0.5 rounded text-[11px]">
+                  {prof.format.toUpperCase()}
+                </span>
               </div>
               <div className="text-[11px] text-gray-500 font-mono">
                 {prof.width} × {prof.height} px ({prof.quality}% Quality)
@@ -184,17 +274,17 @@ export const AIIntelligenceCard: React.FC = () => {
             <div className="p-6 space-y-4 text-xs text-gray-300">
               <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
                 <div className="font-bold text-white text-sm">1. Automatic Real-Time Analysis</div>
-                <p>Simply drag and drop any image into the converter or press <kbd className="bg-gray-800 border px-1 py-0.5 rounded font-mono text-green-400">Ctrl + V</kbd> to paste. The Local AI Engine immediately analyzes the image in your browser.</p>
+                <p>Simply drag and drop any image into the converter or press <kbd className="bg-gray-800 border px-1 py-0.5 rounded font-mono text-green-400">Ctrl + V</kbd> to paste. The Local AI Engine immediately analyzes the uploaded image in real-time.</p>
               </div>
 
               <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
-                <div className="font-bold text-white text-sm">2. Smart Classification & Format Advice</div>
-                <p>The AI determines if your file is a photo, screenshot, document, or logo and recommends the best output codec (WebP, PNG, AVIF) to maximize compression while protecting clarity.</p>
+                <div className="font-bold text-white text-sm">2. Click Tailored Export Profiles to Apply</div>
+                <p>Click any export profile (e.g. <strong>Website</strong>, <strong>Instagram</strong>, or <strong>Discord Emoji</strong>) to instantly set target format, dimensions, quality, and trigger conversion across your queue.</p>
               </div>
 
               <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
                 <div className="font-bold text-white text-sm">3. Quality Scoring & Color Palette</div>
-                <p>View sharpness, noise, exposure scores, and extract dominant color swatches with built-in WCAG contrast verification.</p>
+                <p>View sharpness, noise, exposure scores, and click any color swatch to instantly copy its HEX code to your clipboard.</p>
               </div>
 
               <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">

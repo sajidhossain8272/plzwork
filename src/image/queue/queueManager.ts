@@ -73,6 +73,16 @@ class QueueManager {
     }
     this.notify();
   }
+
+  public applyProfile(format: ImageFormat, width?: number, height?: number, quality?: number): void {
+    for (const job of this.jobs) {
+      job.targetFormat = format;
+      if (width) job.targetWidth = width;
+      if (height) job.targetHeight = height;
+      if (quality) job.targetQuality = quality;
+    }
+    this.notify();
+  }
 }
 
 export const queueManager = new QueueManager();
