@@ -1,0 +1,228 @@
+// PLZWORK Quick Convert V4 - Production Prisma Schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  TEAM
+  ENTERPRISE
+}
+
+model User {
+  id            String       @id @default(uuid())
+  email         String       @unique
+  name          String?
+  avatarUrl     String?
+  passwordHash  String?
+  emailVerified DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
+
+  memberships   TeamMember[]
+  projects      Project[]
+  apiKeys       ApiKey[]
+  history       HistoryItem[]
+  auditLogs     AuditLog[]
+  billing       BillingRecord?
+}
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  planTier    PlanTier     @default(FREE)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  members     TeamMember[]
+  projects    Project[]
+  apiKeys     ApiKey[]
+  pipelines   Pipeline[]
+}
+
+model TeamMember {
+  id             String       @id @default(uuid())
+  role           Role         @default(MEMBER)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([userId, organizationId])
+}
+
+model Project {
+  id             String        @id @default(uuid())
+  name           String
+  description    String?
+  isPublic       Boolean       @default(false)
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  folders        Folder[]
+  images         Image[]
+  jobs           Job[]
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Folder[] @relation("FolderHierarchy")
+  createdAt DateTime @default(now())
+
+  images    Image[]
+}
+
+model Image {
+  id             String       @id @default(uuid())
+  filename       String
+  mimeType       String
+  sizeBytes      BigInt
+  width          Int
+  height         Int
+  hasAlpha       Boolean      @default(false)
+  storagePath    String
+  storageBucket  String
+  projectId      String
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  folderId       String?
+  folder         Folder?      @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  conversions    Conversion[]
+}
+
+model Conversion {
+  id             String    @id @default(uuid())
+  imageId        String
+  image          Image     @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  targetFormat   String
+  targetQuality  Int
+  outputSizeBytes BigInt
+  storagePath    String
+  savedPercentage Float?
+  processingMs   Int
+  createdAt      DateTime  @default(now())
+}
+
+model Job {
+  id          String    @id @default(uuid())
+  status      JobStatus @default(PENDING)
+  payloadJson Json
+  resultJson  Json?
+  errorReason String?
+  projectId   String?
+  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Pipeline {
+  id             String        @id @default(uuid())
+  name           String
+  description    String?
+  stepsJson      Json
+  isPublic       Boolean       @default(false)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Preset {
+  id          String   @id @default(uuid())
+  name        String
+  configJson  Json
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model ApiKey {
+  id             String        @id @default(uuid())
+  name           String
+  keyHash        String        @unique
+  keyPrefix      String
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime      @default(now())
+}
+
+model HistoryItem {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   String
+  fromUnit   String
+  toUnit     String
+  fromValue  Float
+  toValue    Float
+  isPinned   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  resource  String
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model BillingRecord {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId String?
+  monthlyQuota  Int      @default(1000)
+  usedQuota     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FeatureFlag {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  isEnabled   Boolean  @default(false)
+  description String?
+  createdAt   DateTime @default(now())
+}
