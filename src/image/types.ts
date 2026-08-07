@@ -49,6 +49,10 @@ export interface ImageJob {
   targetHeight: number;
   keepMetadata: boolean;
   backgroundColor: string; // hex or 'transparent'
+  rotation?: number; // 0, 90, 180, 270
+  flipHorizontal?: boolean;
+  flipVertical?: boolean;
+  grayscale?: boolean;
   status: "idle" | "converting" | "completed" | "error" | "paused";
   progress: number; // 0 - 100
   error?: string;

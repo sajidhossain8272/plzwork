@@ -19,6 +19,11 @@ import {
   AlertCircle,
   Sliders,
   FileArchive,
+  RotateCw,
+  FlipHorizontal,
+  FlipVertical,
+  SunMedium,
+  Layers,
 } from "lucide-react";
 
 import { ImageJob, ImageFormat, CompressionPreset, ResizeMode } from "../types";
@@ -39,8 +44,15 @@ export const ImageConverterSuite: React.FC = () => {
   const [keepMetadata, setKeepMetadata] = useState<boolean>(false);
   const [backgroundColor] = useState<string>("transparent");
 
+  // Global Image Manipulations
+  const [rotation, setRotation] = useState<number>(0);
+  const [flipHorizontal, setFlipHorizontal] = useState<boolean>(false);
+  const [flipVertical, setFlipVertical] = useState<boolean>(false);
+  const [grayscale, setGrayscale] = useState<boolean>(false);
+
   const [inspectJob, setInspectJob] = useState<ImageJob | null>(null);
   const [previewJob, setPreviewJob] = useState<ImageJob | null>(null);
+  const [isExportingAllFormats, setIsExportingAllFormats] = useState(false);
 
   // Subscribe to reactive Queue Manager updates
   useEffect(() => {
@@ -70,7 +82,7 @@ export const ImageConverterSuite: React.FC = () => {
       }
 
       const id = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-      
+
       // Read data URL
       const dataUrl = await new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -105,6 +117,10 @@ export const ImageConverterSuite: React.FC = () => {
         targetHeight: metadata.height,
         keepMetadata,
         backgroundColor: metadata.hasAlpha ? backgroundColor : "transparent",
+        rotation: 0,
+        flipHorizontal: false,
+        flipVertical: false,
+        grayscale: false,
         status: "idle",
         progress: 0,
       };
@@ -139,7 +155,6 @@ export const ImageConverterSuite: React.FC = () => {
 
       const worker = new Worker(new URL("@/image/workers/imageWorker.ts", import.meta.url));
 
-      // Calculate target dimensions
       let targetW = job.width;
       let targetH = job.height;
 
@@ -158,6 +173,10 @@ export const ImageConverterSuite: React.FC = () => {
         backgroundColor: job.hasAlpha && (job.targetFormat === "jpeg" || job.targetFormat === "bmp")
           ? (job.backgroundColor !== "transparent" ? job.backgroundColor : "#ffffff")
           : "transparent",
+        rotation: job.rotation ?? rotation,
+        flipHorizontal: job.flipHorizontal ?? flipHorizontal,
+        flipVertical: job.flipVertical ?? flipVertical,
+        grayscale: job.grayscale ?? grayscale,
       });
 
       worker.onmessage = (e) => {
@@ -182,7 +201,7 @@ export const ImageConverterSuite: React.FC = () => {
         worker.terminate();
       };
     });
-  }, [jobs, globalFormat, quality, resizeMode, resizePercent]);
+  }, [jobs, globalFormat, quality, resizeMode, resizePercent, rotation, flipHorizontal, flipVertical, grayscale]);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -206,6 +225,47 @@ export const ImageConverterSuite: React.FC = () => {
     const res = await fetch(job.convertedDataUrl);
     const blob = await res.blob();
     saveAs(blob, `${baseName}.${ext}`);
+  };
+
+  /**
+   * Download image in ALL formats simultaneously (WebP, PNG, JPEG, AVIF, BMP, ICO).
+   */
+  const handleDownloadAllFormats = async (job: ImageJob) => {
+    setIsExportingAllFormats(true);
+    const formats: ImageFormat[] = ["webp", "png", "jpeg", "avif", "bmp", "ico"];
+    const zip = new JSZip();
+    const baseName = getBaseName(job.name);
+
+    for (const fmt of formats) {
+      const worker = new Worker(new URL("@/image/workers/imageWorker.ts", import.meta.url));
+      
+      const convertedUrl = await new Promise<string>((resolve) => {
+        worker.postMessage({
+          dataUrl: job.originalDataUrl,
+          targetFormat: fmt,
+          targetQuality: quality,
+          targetWidth: job.width,
+          targetHeight: job.height,
+          backgroundColor: job.hasAlpha && (fmt === "jpeg" || fmt === "bmp") ? "#ffffff" : "transparent",
+          rotation: job.rotation ?? rotation,
+          flipHorizontal: job.flipHorizontal ?? flipHorizontal,
+          flipVertical: job.flipVertical ?? flipVertical,
+          grayscale: job.grayscale ?? grayscale,
+        });
+
+        worker.onmessage = (e) => {
+          resolve(e.data.converted);
+          worker.terminate();
+        };
+      });
+
+      const base64Data = convertedUrl.split(",")[1];
+      zip.file(`${baseName}.${fmt}`, base64Data, { base64: true });
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    saveAs(content, `${baseName}-all-formats.zip`);
+    setIsExportingAllFormats(false);
   };
 
   /**
@@ -236,16 +296,16 @@ export const ImageConverterSuite: React.FC = () => {
 
   return (
     <div className="w-full bg-white rounded-2xl border border-[#dde4da] shadow-sm p-6 sm:p-8 space-y-8">
-      {/* Header Title & Tagline */}
+      {/* Header Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-[#0d161c] text-[#42b719]">
             <ImageIcon className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-[#0d161c]">Image Converter V2</h2>
+            <h2 className="text-2xl font-bold text-[#0d161c]">Browser Image Converter Studio</h2>
             <p className="text-xs text-[#5d6870] mt-0.5">
-              100% Client-Side Web Worker conversion · WebP, PNG, JPEG, AVIF, BMP, TIFF, ICO
+              Multi-Format Conversion · Web Workers · Image Filters · Bulk Zip & All-Format Export
             </p>
           </div>
         </div>
@@ -253,16 +313,63 @@ export const ImageConverterSuite: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#d6ded2] bg-[#f8faf7] px-3.5 py-1.5 text-xs font-semibold text-[#30404a]">
             <span className="h-2 w-2 rounded-full bg-[#42b719]" />
-            Local Serverless Privacy
+            100% Client-Side Privacy
           </span>
         </div>
       </div>
 
-      {/* Control Panel: Format, Compression & Resizing */}
+      {/* Control Panel: Format, Compression & Image Filters */}
       <div className="bg-[#f8faf7] border border-[#e2e8e0] rounded-2xl p-5 space-y-6">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#0d161c] uppercase tracking-wider">
-          <Sliders className="w-4 h-4 text-[#42b719]" />
-          <span>Conversion & Compression Settings</span>
+        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#0d161c] uppercase tracking-wider">
+            <Sliders className="w-4 h-4 text-[#42b719]" />
+            <span>Conversion & Compression Settings</span>
+          </div>
+
+          {/* Transformations Toolbar */}
+          <div className="flex items-center gap-1 bg-white border border-[#cfd8cc] p-1 rounded-xl shadow-2xs">
+            <button
+              onClick={() => setRotation((r) => (r + 90) % 360)}
+              className={`p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition ${
+                rotation !== 0 ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
+              }`}
+              title="Rotate 90°"
+            >
+              <RotateCw className="w-3.5 h-3.5" />
+              <span>{rotation}°</span>
+            </button>
+
+            <button
+              onClick={() => setFlipHorizontal((f) => !f)}
+              className={`p-1.5 rounded-lg text-xs transition ${
+                flipHorizontal ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
+              }`}
+              title="Flip Horizontal"
+            >
+              <FlipHorizontal className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              onClick={() => setFlipVertical((f) => !f)}
+              className={`p-1.5 rounded-lg text-xs transition ${
+                flipVertical ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
+              }`}
+              title="Flip Vertical"
+            >
+              <FlipVertical className="w-3.5 h-3.5" />
+            </button>
+
+            <button
+              onClick={() => setGrayscale((g) => !g)}
+              className={`p-1.5 rounded-lg text-xs flex items-center gap-1 transition ${
+                grayscale ? "bg-[#42b719] text-white" : "text-gray-700 hover:bg-gray-100"
+              }`}
+              title="Grayscale Filter"
+            >
+              <SunMedium className="w-3.5 h-3.5" />
+              <span>B&W</span>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -390,7 +497,7 @@ export const ImageConverterSuite: React.FC = () => {
             Drag & drop images here, or <span className="text-[#42b719] underline">click to browse</span>
           </div>
           <p className="text-xs text-gray-500 max-w-md mx-auto">
-            Supports PNG, JPEG, WebP, AVIF, GIF, BMP, TIFF, ICO, and HEIC. You can also press <kbd className="bg-gray-100 border px-1 py-0.5 rounded font-mono">Ctrl + V</kbd> anywhere to paste from clipboard.
+            Supports PNG, JPEG, WebP, AVIF, GIF, BMP, TIFF, ICO, and HEIC. Press <kbd className="bg-gray-100 border px-1 py-0.5 rounded font-mono">Ctrl + V</kbd> to paste directly.
           </p>
         </label>
       </div>
@@ -523,6 +630,15 @@ export const ImageConverterSuite: React.FC = () => {
                       {/* Actions */}
                       <td className="p-3 text-right">
                         <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleDownloadAllFormats(job)}
+                            disabled={isExportingAllFormats}
+                            className="px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-lg text-[11px] font-semibold flex items-center gap-1 transition"
+                            title="Download in All Formats (WebP, PNG, JPEG, AVIF, BMP, ICO)"
+                          >
+                            <Layers className="w-3 h-3 text-purple-600" />
+                            <span>All Formats</span>
+                          </button>
                           <button
                             onClick={() => setPreviewJob(job)}
                             className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition"

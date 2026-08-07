@@ -4,7 +4,6 @@ import React from "react";
 import QuickConvertTerminal from "./QuickConvertTerminal";
 import { Command, ArrowRight } from "lucide-react";
 
-
 interface HeroProps {
   onConvertNowClick: () => void;
   onOpenCommandPalette: () => void;
@@ -18,15 +17,15 @@ const Hero: React.FC<HeroProps> = ({ onConvertNowClick, onOpenCommandPalette }) 
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#d6ded2] bg-white px-4 py-2 text-xs font-semibold text-[#30404a] shadow-2xs">
               <span className="h-2 w-2 rounded-full bg-[#42b719]" />
-              Plzwork · Flagship Product
+              Plzwork · Private Browser Image Studio
             </div>
 
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-[#0d161c] sm:text-5xl lg:text-6xl">
-              The fastest universal conversion engine.
+              The fastest browser image conversion platform.
             </h1>
 
             <p className="max-w-2xl text-base leading-relaxed text-[#5b6870] sm:text-lg">
-              Convert units, currencies, digital storage, media, developer payloads, and images instantly in your browser. Privacy-first, zero server latency, installable PWA.
+              Convert, resize, compress, and edit images instantly in WebP, PNG, JPEG, AVIF, BMP, and ICO. 100% private, zero server latency, installable PWA.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -34,7 +33,7 @@ const Hero: React.FC<HeroProps> = ({ onConvertNowClick, onOpenCommandPalette }) 
                 className="rounded-xl bg-[#0e171d] px-6 py-3.5 font-semibold text-white transition hover:bg-[#1d2a32] shadow-md flex items-center gap-2 text-sm"
                 onClick={onConvertNowClick}
               >
-                <span>Universal Converter</span>
+                <span>Image Studio</span>
                 <ArrowRight className="w-4 h-4 text-[#42b719]" />
               </button>
 

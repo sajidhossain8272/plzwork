@@ -45,19 +45,19 @@ export default function NavBar({ onOpenCommandPalette, onOpenHistory }: NavBarPr
                 </div>
                 <div className="flex flex-col">
                   <span className="text-lg font-bold tracking-tight text-[#0d161c]">Plzwork</span>
-                  <span className="text-[10px] font-semibold text-[#42b719] tracking-wider uppercase">Quick Convert V2</span>
+                  <span className="text-[10px] font-semibold text-[#42b719] tracking-wider uppercase">Quick Convert</span>
                 </div>
               </Link>
             </div>
 
-            {/* Middle Action Bar: Command Palette Search & History */}
+            {/* Middle Action Bar: Search & History */}
             <div className="hidden md:flex items-center space-x-3">
               <button
                 onClick={onOpenCommandPalette}
                 className="flex items-center gap-3 bg-[#0d161c] text-white px-4 py-2 rounded-full text-xs font-semibold shadow-sm hover:bg-[#1d2a32] transition group"
               >
                 <Search className="w-3.5 h-3.5 text-[#42b719]" />
-                <span>Search or convert...</span>
+                <span>Search image tools...</span>
                 <span className="flex items-center gap-0.5 bg-gray-800 text-gray-300 text-[10px] font-mono px-1.5 py-0.5 rounded border border-gray-700 ml-1">
                   <Command className="w-2.5 h-2.5" />K
                 </span>
