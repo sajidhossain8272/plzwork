@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Search, History, Command } from 'lucide-react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
