@@ -14,6 +14,7 @@ import { ClipboardBanner } from "./components/ClipboardBanner";
 import { HistoryDrawer } from "./components/HistoryDrawer";
 import { ImageConverterSuite } from "@/image/components/ImageConverterSuite";
 import { V4PlatformSuite } from "./components/V4PlatformSuite";
+import { AIIntelligenceCard } from "./components/AIIntelligenceCard";
 
 import { CategoryType, Unit, NaturalLanguageParseResult, HistoryItem } from "@/engine/types";
 import { registerAllPlugins } from "@/plugins";
@@ -81,6 +82,9 @@ export default function Home() {
 
         {/* Desktop-Grade V2 Image Converter Studio */}
         <ImageConverterSuite />
+
+        {/* Local AI Intelligence Engine V5 */}
+        <AIIntelligenceCard />
 
         {/* FAANG-Level V4 Platform Suite */}
         <V4PlatformSuite />
