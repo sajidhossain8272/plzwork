@@ -11,6 +11,7 @@ import {
   Terminal,
   X,
   FileCheck,
+  HelpCircle,
 } from "lucide-react";
 
 import { AIRuntime } from "@/ai/aiRuntime";
@@ -19,6 +20,7 @@ import { AIAnalysisResult } from "@/ai/types";
 export const AIIntelligenceCard: React.FC = () => {
   const [analysis, setAnalysis] = useState<AIAnalysisResult | null>(null);
   const [showDeveloperMode, setShowDeveloperMode] = useState(false);
+  const [showUsageGuide, setShowUsageGuide] = useState(false);
 
   useEffect(() => {
     AIRuntime.analyzeImage({
@@ -52,6 +54,14 @@ export const AIIntelligenceCard: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowUsageGuide(true)}
+            className="px-4 py-2 bg-white border border-[#cfd8cc] hover:border-gray-400 text-gray-800 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-[#42b719]" />
+            <span>How to Use AI</span>
+          </button>
+
           <button
             onClick={() => setShowDeveloperMode(true)}
             className="px-4 py-2 bg-[#0d161c] hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5"
@@ -153,6 +163,57 @@ export const AIIntelligenceCard: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* How to Use AI Guide Modal */}
+      {showUsageGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-xl bg-[#0e171d] text-white rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-[#141f27]">
+              <div className="flex items-center gap-2.5">
+                <HelpCircle className="w-5 h-5 text-[#42b719]" />
+                <h3 className="text-base font-bold">How to Use Local AI Image Intelligence</h3>
+              </div>
+              <button
+                onClick={() => setShowUsageGuide(false)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 text-xs text-gray-300">
+              <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
+                <div className="font-bold text-white text-sm">1. Automatic Real-Time Analysis</div>
+                <p>Simply drag and drop any image into the converter or press <kbd className="bg-gray-800 border px-1 py-0.5 rounded font-mono text-green-400">Ctrl + V</kbd> to paste. The Local AI Engine immediately analyzes the image in your browser.</p>
+              </div>
+
+              <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
+                <div className="font-bold text-white text-sm">2. Smart Classification & Format Advice</div>
+                <p>The AI determines if your file is a photo, screenshot, document, or logo and recommends the best output codec (WebP, PNG, AVIF) to maximize compression while protecting clarity.</p>
+              </div>
+
+              <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
+                <div className="font-bold text-white text-sm">3. Quality Scoring & Color Palette</div>
+                <p>View sharpness, noise, exposure scores, and extract dominant color swatches with built-in WCAG contrast verification.</p>
+              </div>
+
+              <div className="p-3.5 bg-[#141f27] border border-gray-800 rounded-xl space-y-1">
+                <div className="font-bold text-white text-sm">4. 100% Privacy Guarantee</div>
+                <p>All 11 intelligence capabilities execute locally using rule-based computer vision and perceptual hashing. No files or metadata ever leave your computer.</p>
+              </div>
+            </div>
+
+            <div className="px-6 py-3.5 bg-[#141f27] border-t border-gray-800 flex justify-end">
+              <button
+                onClick={() => setShowUsageGuide(false)}
+                className="px-5 py-2 bg-[#42b719] hover:bg-[#349814] text-white text-xs font-semibold rounded-xl transition"
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Developer Mode Diagnostics Modal */}
       {showDeveloperMode && (

@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import QuickConvertTerminal from "./QuickConvertTerminal";
-import { Command, ArrowRight } from "lucide-react";
+import { Command, ArrowRight, BookOpen } from "lucide-react";
+import { DocumentationModal } from "./DocumentationModal";
 
 interface HeroProps {
   onConvertNowClick: () => void;
@@ -10,6 +11,8 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onConvertNowClick, onOpenCommandPalette }) => {
+  const [docModalOpen, setDocModalOpen] = useState(false);
+
   return (
     <div className="pt-16">
       <section className="relative overflow-hidden border-b border-[#dde4da] bg-[#f7f7f4] py-16 text-[#0f171d] sm:py-20">
@@ -38,12 +41,19 @@ const Hero: React.FC<HeroProps> = ({ onConvertNowClick, onOpenCommandPalette }) 
               </button>
 
               <button
+                onClick={() => setDocModalOpen(true)}
+                className="rounded-xl border border-[#cfd7cf] bg-white px-5 py-3.5 font-semibold text-[#142027] transition hover:border-[#9fb89d] shadow-2xs flex items-center gap-2 text-sm"
+              >
+                <BookOpen className="w-4 h-4 text-[#42b719]" />
+                <span>Read Documentation</span>
+              </button>
+
+              <button
                 onClick={onOpenCommandPalette}
                 className="rounded-xl border border-[#cfd7cf] bg-white px-5 py-3.5 font-semibold text-[#142027] transition hover:border-[#9fb89d] shadow-2xs flex items-center gap-2 text-sm"
               >
                 <Command className="w-4 h-4 text-gray-500" />
-                <span>Command Palette</span>
-                <kbd className="text-[10px] bg-gray-100 border border-gray-300 px-1.5 py-0.5 rounded text-gray-600 font-mono ml-1">⌘K</kbd>
+                <span>⌘K Search</span>
               </button>
             </div>
           </div>
@@ -53,6 +63,9 @@ const Hero: React.FC<HeroProps> = ({ onConvertNowClick, onOpenCommandPalette }) 
           </div>
         </div>
       </section>
+
+      {/* Interactive Documentation Modal */}
+      <DocumentationModal isOpen={docModalOpen} onClose={() => setDocModalOpen(false)} />
     </div>
   );
 };

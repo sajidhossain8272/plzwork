@@ -4,8 +4,6 @@ import { useRef, useState } from "react";
 import Features from "./components/Features";
 import Hero from "./components/Hero";
 import ConversionTable from "./components/ConversionTable";
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
 
 import { CommandPalette } from "./components/CommandPalette";
 import { HistoryDrawer } from "./components/HistoryDrawer";
@@ -39,12 +37,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f4] text-[#0f171d]">
-      <NavBar
-        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
-        onOpenHistory={() => setHistoryOpen(true)}
-      />
-
+    <div className="bg-[#f7f7f4] text-[#0f171d]">
       <Hero
         onConvertNowClick={scrollToMain}
         onOpenCommandPalette={() => setCommandPaletteOpen(true)}
@@ -61,7 +54,6 @@ export default function Home() {
 
       <ConversionTable />
       <Features />
-      <Footer />
 
       {/* Command Palette Modal */}
       <CommandPalette
