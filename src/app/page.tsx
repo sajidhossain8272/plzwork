@@ -1,24 +1,40 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { FaCheckCircle, FaSpinner, FaHourglass, FaTrash } from "react-icons/fa";
+import { Image as ImageIcon } from "lucide-react";
+
 import Dropzone from "./components/Dropzone";
 import ConversionControls from "./components/ConversionControls";
 import { getBaseName } from "@/lib/imageUtils";
 import Features from "./components/Features";
 import Hero from "./components/Hero";
 import ConversionTable from "./components/ConversionTable";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+
+import { UniversalConverter } from "./components/UniversalConverter";
+import { DevToolsCard } from "./components/DevToolsCard";
+import { CommandPalette } from "./components/CommandPalette";
+import { ClipboardBanner } from "./components/ClipboardBanner";
+import { HistoryDrawer } from "./components/HistoryDrawer";
+
+import { CategoryType, Unit, NaturalLanguageParseResult, HistoryItem } from "@/engine/types";
+import { registerAllPlugins } from "@/plugins";
+
+// Auto register plugins on load
+registerAllPlugins();
 
 interface ImageItem {
   id: number;
   originalBase64: string;
   originalFileName: string;
   convertedBase64?: string;
-  isUploading: boolean; // Shows upload progress
-  isLoading: boolean;   // Shows conversion progress
-  selected: boolean;    // For selecting this image to convert
+  isUploading: boolean;
+  isLoading: boolean;
+  selected: boolean;
 }
 
 export default function Home() {
@@ -29,25 +45,42 @@ export default function Home() {
     resolution: "original" as "original" | "25" | "50" | "75",
   });
 
-  // Create a ref for the main conversion section
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>("length");
+  const [selectedFromUnit, setSelectedFromUnit] = useState<Unit | undefined>(undefined);
+  const [selectedToUnit, setSelectedToUnit] = useState<Unit | undefined>(undefined);
+  const [initialValue, setInitialValue] = useState<number>(1);
+
   const mainRef = useRef<HTMLDivElement | null>(null);
 
-  // Function to scroll to the main conversion section
   const scrollToMain = () => {
     if (mainRef.current) {
       mainRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const handleSelectConversionFromNL = (result: NaturalLanguageParseResult) => {
+    setSelectedCategory(result.category);
+    setSelectedFromUnit(result.fromUnit);
+    setSelectedToUnit(result.toUnit);
+    setInitialValue(result.value);
+    scrollToMain();
+  };
+
+  const handleSelectHistoryItem = (item: HistoryItem) => {
+    setSelectedCategory(item.category);
+    setInitialValue(item.fromValue);
+    scrollToMain();
+  };
+
   /**
    * Add images from dropzone with upload progress.
-   * Each file is added immediately with isUploading true,
-   * and then updated when its processing (and optional HEIC conversion) is complete.
    */
   const addImages = (fileData: { base64: string; fileName: string }[]) => {
     fileData.forEach(async (data, idx) => {
       const id = Date.now() + idx;
-      // Immediately add a placeholder image with isUploading true
       setImages((prev) => [
         ...prev,
         {
@@ -62,7 +95,6 @@ export default function Home() {
 
       let base64 = data.base64;
 
-      // If the file is HEIC/HEIF, convert it first
       if (data.fileName.endsWith(".heic") || data.fileName.endsWith(".heif")) {
         const response = await fetch(data.base64);
         const blob = await response.blob();
@@ -75,7 +107,6 @@ export default function Home() {
         });
       }
 
-      // Update the image with the processed base64 and mark uploading as complete
       setImages((prev) =>
         prev.map((img) =>
           img.id === id
@@ -86,9 +117,6 @@ export default function Home() {
     });
   };
 
-  /**
-   * Toggle selection of an image.
-   */
   const toggleSelectImage = (id: number) => {
     setImages((prev) =>
       prev.map((img) =>
@@ -97,24 +125,16 @@ export default function Home() {
     );
   };
 
-  /**
-   * Remove an image from the list.
-   */
   const removeImage = (id: number) => {
     setImages((prev) => prev.filter((img) => img.id !== id));
   };
 
-  /**
-   * Convert selected images and update status individually.
-   * Each image conversion is handled in its own Web Worker.
-   */
-  const handleConvert = async () => {
+  const handleConvertImages = async () => {
     const selectedImages = images.filter(
       (img) => img.selected && !img.isUploading
     );
     if (selectedImages.length === 0) return;
 
-    // Mark selected images as loading and clear old conversion data.
     setImages((prev) =>
       prev.map((img) =>
         img.selected && !img.isUploading
@@ -123,7 +143,6 @@ export default function Home() {
       )
     );
 
-    // Process each selected image individually.
     selectedImages.forEach((image) => {
       const worker = new Worker(
         new URL("@/lib/convertWorker", import.meta.url)
@@ -138,7 +157,6 @@ export default function Home() {
 
       worker.onmessage = (e) => {
         const { converted } = e.data;
-        // Update the image with the conversion result
         setImages((prev) =>
           prev.map((img) =>
             img.id === image.id
@@ -151,19 +169,10 @@ export default function Home() {
     });
   };
 
-  /**
-   * Download logic:
-   * - If only one converted image exists, download it directly.
-   * - If multiple images are converted, pack them in a ZIP.
-   */
-  const handleDownloadAll = async () => {
+  const handleDownloadAllImages = async () => {
     const convertedItems = images.filter((img) => img.convertedBase64);
+    if (convertedItems.length === 0) return;
 
-    if (convertedItems.length === 0) {
-      return; // nothing to download
-    }
-
-    // Single image scenario
     if (convertedItems.length === 1) {
       const item = convertedItems[0];
       const ext = conversionSettings.format;
@@ -172,7 +181,6 @@ export default function Home() {
       return;
     }
 
-    // Otherwise, build a ZIP archive
     const zip = new JSZip();
     convertedItems.forEach((item) => {
       const base64Data = item.convertedBase64!.split(",")[1];
@@ -185,9 +193,6 @@ export default function Home() {
     saveAs(content, "converted-images.zip");
   };
 
-  /**
-   * Helper to download a single base64 image as a file.
-   */
   const downloadSingleImage = async (dataUrl: string, fileName: string) => {
     const response = await fetch(dataUrl);
     const blob = await response.blob();
@@ -200,35 +205,58 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f7f7f4] text-[#0f171d]">
-      {/* Hero Section */}
-      <Hero onConvertNowClick={scrollToMain} />
+      <NavBar
+        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+        onOpenHistory={() => setHistoryOpen(true)}
+      />
 
-      {/* Main Conversion Tool Section */}
-      <main ref={mainRef} className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <div className="rounded-lg border border-[#dde4da] bg-white p-5 shadow-sm sm:p-7">
-          <div className="mb-6">
-            <div className="flex items-center space-x-2 text-2xl font-semibold text-[#0d161c] tracking-tight pb-1">
-              <span>Quick Convert</span>
+      <Hero
+        onConvertNowClick={scrollToMain}
+        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+      />
+
+      {/* Main Conversion Workspace */}
+      <main ref={mainRef} className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-10">
+        {/* Smart Clipboard Suggestion Banner */}
+        <ClipboardBanner
+          onConvertSuggested={(result) => handleSelectConversionFromNL(result)}
+        />
+
+        {/* Universal Unit & Currency Converter */}
+        <UniversalConverter
+          initialCategory={selectedCategory}
+          selectedFromUnit={selectedFromUnit}
+          selectedToUnit={selectedToUnit}
+          initialValue={initialValue}
+        />
+
+        {/* Developer Utilities (Base64, UUID, JSON) */}
+        <DevToolsCard />
+
+        {/* Image Converter Section */}
+        <div className="rounded-2xl border border-[#dde4da] bg-white p-6 shadow-sm sm:p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#0d161c] text-white">
+              <ImageIcon className="w-5 h-5" />
             </div>
-            <p className="max-w-3xl text-[#5d6870]">
-              Upload your images, adjust conversion settings, and download your optimized images.
-              A Plzwork product built for fast, private, browser-based conversion.
-            </p>
+            <div>
+              <h3 className="text-xl font-bold text-[#0d161c]">Image & Media Converter</h3>
+              <p className="text-xs text-[#5d6870]">
+                Private, browser-based WebP, JPEG, PNG, HEIC, and HEIF conversion.
+              </p>
+            </div>
           </div>
 
-          {/* Conversion Controls */}
           <ConversionControls
             settings={conversionSettings}
             setSettings={setConversionSettings}
-            onConvert={handleConvert}
+            onConvert={handleConvertImages}
             hasSelectedImages={hasSelectedImages}
             selectedCount={selectedCount}
           />
 
-          {/* Dropzone */}
           <Dropzone onDrop={addImages} multiple />
 
-          {/* Table of Images */}
           {images.length > 0 && (
             <div className="overflow-x-auto mt-6 rounded-lg border border-[#dde4da]">
               <table className="min-w-full text-left text-sm">
@@ -249,14 +277,10 @@ export default function Home() {
                     let statusIcon;
                     let statusText;
                     if (img.isUploading) {
-                      statusIcon = (
-                        <FaSpinner className="animate-spin text-orange-500" />
-                      );
+                      statusIcon = <FaSpinner className="animate-spin text-orange-500" />;
                       statusText = "Uploading...";
                     } else if (img.isLoading) {
-                      statusIcon = (
-                        <FaSpinner className="animate-spin text-blue-600" />
-                      );
+                      statusIcon = <FaSpinner className="animate-spin text-blue-600" />;
                       statusText = "Converting...";
                     } else if (img.convertedBase64) {
                       statusIcon = <FaCheckCircle className="text-green-500" />;
@@ -268,7 +292,6 @@ export default function Home() {
 
                     return (
                       <tr key={img.id} className="border-b border-[#eef1ec]">
-                        {/* Checkbox */}
                         <td className="p-3 text-center">
                           <input
                             type="checkbox"
@@ -278,20 +301,16 @@ export default function Home() {
                             disabled={img.isUploading || img.isLoading}
                           />
                         </td>
-                        {/* Original Filename */}
                         <td className="p-3">{img.originalFileName}</td>
-                        {/* Status */}
                         <td className="p-3">
                           <div className="flex items-center gap-2">
                             {statusIcon}
                             <span>{statusText}</span>
                           </div>
                         </td>
-                        {/* Converted File Name */}
                         <td className="p-3">
                           {img.convertedBase64 ? `${baseName}.${ext}` : "N/A"}
                         </td>
-                        {/* Actions */}
                         <td className="p-3">
                           <button
                             onClick={() => removeImage(img.id)}
@@ -309,13 +328,12 @@ export default function Home() {
             </div>
           )}
 
-          {/* Download Button */}
           {images.length > 0 && (
             <div className="mt-4 flex justify-center">
               <button
-                onClick={handleDownloadAll}
+                onClick={handleDownloadAllImages}
                 disabled={!hasConverted}
-                className={`px-6 py-2 rounded-lg font-semibold transition-colors text-white ${
+                className={`px-6 py-2.5 rounded-xl font-semibold transition-colors text-white ${
                   hasConverted
                     ? "bg-[#42b719] hover:bg-[#349814]"
                     : "bg-gray-300 cursor-not-allowed"
@@ -327,9 +345,31 @@ export default function Home() {
           )}
         </div>
       </main>
+
       <ConversionTable />
-      {/* Features Section */}
       <Features />
+      <Footer />
+
+      {/* Command Palette Modal */}
+      <CommandPalette
+        isOpen={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+        onSelectCategory={(cat) => setSelectedCategory(cat)}
+        onSelectConversion={(from, to, val) => {
+          setSelectedCategory(from.category);
+          setSelectedFromUnit(from);
+          setSelectedToUnit(to);
+          setInitialValue(val);
+          scrollToMain();
+        }}
+      />
+
+      {/* History Drawer */}
+      <HistoryDrawer
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        onSelectHistoryItem={(item) => handleSelectHistoryItem(item)}
+      />
     </div>
   );
 }

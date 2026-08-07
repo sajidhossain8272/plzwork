@@ -1,42 +1,78 @@
-# Quick Convert — Fast, Secure & Private Image Converter
+# Quick Convert V2 by Plzwork — The Fastest Universal Conversion Engine
 
-**Quick Convert** is a privacy-first, client-side image conversion application. All conversions happen directly in your browser using Web Workers and modern web technology—your files are never uploaded to any server.
-
----
-
-## ⚡ Key Features
-
-- **100% Client-Side Processing**: Your images stay on your device. Complete privacy and security.
-- **Multi-Format Support**: Convert between **WebP**, **JPEG**, and **PNG**, as well as decoding **HEIC / HEIF** images.
-- **Bulk Image Conversion**: Select and convert multiple files simultaneously.
-- **Web Worker Acceleration**: Offloads conversion tasks to background Web Workers to keep the UI smooth and responsive.
-- **Custom Quality & Resolution**: Adjust quality levels (High, Medium, Low) and resize output dimensions (Original, 75%, 50%, 25%).
-- **ZIP Export**: Single images are downloaded directly; multiple converted files are bundled into a convenient `.zip` file.
-- **Zero Server Overhead & Limits**: Conversion speed and capacity are determined by your own device's hardware.
+**Quick Convert V2** is the flagship universal conversion platform by **Plzwork**. It combines modular plugin-driven engineering, a decoupled conversion graph engine, natural language expressions, a Raycast-style Command Palette (`⌘K`), local history & pinned shortcuts, developer utilities, and client-side image processing.
 
 ---
 
-## 🚀 Tech Stack
+## 🌟 Key Features
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router, Turbopack)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) & PostCSS
-- **Key Libraries**:
-  - `heic2any` — Client-side HEIC/HEIF decoding
-  - `react-dropzone` — Drag-and-drop file uploader
-  - `jszip` & `file-saver` — Bulk file packaging and automatic download triggering
-  - `react-icons` & `@heroicons/react` — Modern UI icons
+- **⚡ Universal Plugin Engine**: Modular, extensible architecture supporting **Length**, **Weight/Mass**, **Temperature**, **Currency**, **Digital Storage**, **Volume**, **Area**, **Speed**, **Time**, **Pressure**, **Energy**, **Angle**, **Developer Utilities**, and **Image Processing**.
+- **💬 Natural Language Parsing**: Instantly converts queries like `"5 feet to cm"`, `"100 usd to eur"`, `"100°C"`, or `"15 miles"`.
+- **⌨️ Keyboard-First Command Palette (`⌘K` / `/`)**: Jump to any category, unit, or conversion instantly without leaving the keyboard.
+- **📜 Local History & Pinned Shortcuts**: Automatically preserves calculations locally with pin/favorite shortcuts and deduplication.
+- **📋 Smart Clipboard Intelligence**: Non-intrusive banner detects unit values in the clipboard and offers one-click conversion.
+- **🛠️ Developer Utilities**: Integrated Base64 encoder/decoder, UUID v4 generator, and JSON Formatter/Validator.
+- **🖼️ Client-Side Image Converter**: Convert WebP, JPEG, PNG, HEIC, and HEIF files with multi-threading Web Workers.
+- **📱 Installable PWA & Offline Support**: Full PWA capabilities for offline desktop & mobile usage.
 
 ---
 
-## 📦 Getting Started
+## 🏗️ Architecture & Plugin System
+
+Quick Convert V2 separates unit math and logic strictly from UI components:
+
+```
+src/
+├── engine/                # Core Conversion Graph Engine
+│   ├── types.ts           # Type definitions for Units, Plugins, Results
+│   ├── registry.ts        # Dynamic Plugin Registry
+│   ├── conversionGraph.ts # Ratio & non-linear formula math engine
+│   ├── parser.ts          # Natural Language Parser
+│   ├── search.ts          # Smart search & alias index
+│   └── history.ts         # LocalStorage history & event emitters
+├── plugins/               # Extensible Converter Plugins
+│   ├── length.ts
+│   ├── weight.ts
+│   ├── temperature.ts
+│   ├── currency.ts
+│   ├── digital.ts
+│   ├── volume.ts
+│   ├── area.ts
+│   ├── speed.ts
+│   ├── time.ts
+│   ├── pressure.ts
+│   ├── energy.ts
+│   ├── angle.ts
+│   └── dev-utilities.ts
+└── app/components/        # UI Layer (UniversalConverter, CommandPalette, etc.)
+```
+
+### Adding a New Converter Plugin
+
+Adding a new unit or dimension requires dropping a single plugin file into `src/plugins/`:
+
+```typescript
+import { ConverterPlugin } from "../engine/types";
+
+export const myPlugin: ConverterPlugin = {
+  id: "custom",
+  name: "Custom Dimension",
+  description: "Convert custom units",
+  iconName: "Zap",
+  baseUnitId: "base_unit",
+  units: [ /* Unit definitions */ ]
+};
+```
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
+- Node.js v18 or higher
+- npm / pnpm / yarn
 
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- npm or yarn
-
-### Installation & Local Running
+### Installation & Running Locally
 
 1. **Clone the repository**:
    ```bash
@@ -49,24 +85,24 @@
    npm install
    ```
 
-3. **Start the development server**:
+3. **Run the Vitest test suite**:
+   ```bash
+   npm test
+   ```
+
+4. **Start the development server**:
    ```bash
    npm run dev
    ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## 🛠️ Scripts
-
-- `npm run dev`: Starts the Next.js dev server with Turbopack.
-- `npm run build`: Compiles and builds the production application.
-- `npm run start`: Runs the compiled production build locally.
-- `npm run test`: Executes unit tests (e.g. `imageUtils.test.ts`).
+5. **Build for Production**:
+   ```bash
+   npm run build
+   ```
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+Licensed under the MIT License. Built with ❤️ by **Plzwork**.

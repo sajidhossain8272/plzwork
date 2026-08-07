@@ -1,0 +1,67 @@
+import { ConverterPlugin } from "../engine/types";
+
+export const timePlugin: ConverterPlugin = {
+  id: "time",
+  name: "Time",
+  description: "Convert milliseconds, seconds, minutes, hours, days, weeks, and years.",
+  iconName: "Clock",
+  baseUnitId: "second",
+  units: [
+    {
+      id: "second",
+      name: "Second",
+      symbol: "s",
+      category: "time",
+      aliases: ["second", "seconds", "sec", "s"],
+      ratioToBase: 1,
+    },
+    {
+      id: "millisecond",
+      name: "Millisecond",
+      symbol: "ms",
+      category: "time",
+      aliases: ["millisecond", "milliseconds", "ms"],
+      ratioToBase: 0.001,
+    },
+    {
+      id: "minute",
+      name: "Minute",
+      symbol: "min",
+      category: "time",
+      aliases: ["minute", "minutes", "min", "m"],
+      ratioToBase: 60,
+    },
+    {
+      id: "hour",
+      name: "Hour",
+      symbol: "hr",
+      category: "time",
+      aliases: ["hour", "hours", "hr", "hrs", "h"],
+      ratioToBase: 3600,
+    },
+    {
+      id: "day",
+      name: "Day",
+      symbol: "d",
+      category: "time",
+      aliases: ["day", "days", "d"],
+      ratioToBase: 86400,
+    },
+    {
+      id: "week",
+      name: "Week",
+      symbol: "wk",
+      category: "time",
+      aliases: ["week", "weeks", "wk"],
+      ratioToBase: 604800,
+    },
+    {
+      id: "year",
+      name: "Year",
+      symbol: "yr",
+      category: "time",
+      aliases: ["year", "years", "yr", "y"],
+      ratioToBase: 31536000,
+    },
+  ],
+};

@@ -1,0 +1,67 @@
+import { ConverterPlugin } from "../engine/types";
+
+export const volumePlugin: ConverterPlugin = {
+  id: "volume",
+  name: "Volume",
+  description: "Convert liters, milliliters, gallons, quarts, pints, cups, and cubic meters.",
+  iconName: "Droplet",
+  baseUnitId: "liter",
+  units: [
+    {
+      id: "liter",
+      name: "Liter",
+      symbol: "L",
+      category: "volume",
+      aliases: ["liter", "liters", "litre", "litres", "l"],
+      ratioToBase: 1,
+    },
+    {
+      id: "milliliter",
+      name: "Milliliter",
+      symbol: "mL",
+      category: "volume",
+      aliases: ["milliliter", "milliliters", "millilitre", "millilitres", "ml"],
+      ratioToBase: 0.001,
+    },
+    {
+      id: "gallon",
+      name: "Gallon (US)",
+      symbol: "gal",
+      category: "volume",
+      aliases: ["gallon", "gallons", "gal"],
+      ratioToBase: 3.785411784,
+    },
+    {
+      id: "quart",
+      name: "Quart (US)",
+      symbol: "qt",
+      category: "volume",
+      aliases: ["quart", "quarts", "qt"],
+      ratioToBase: 0.946352946,
+    },
+    {
+      id: "pint",
+      name: "Pint (US)",
+      symbol: "pt",
+      category: "volume",
+      aliases: ["pint", "pints", "pt"],
+      ratioToBase: 0.473176473,
+    },
+    {
+      id: "cup",
+      name: "Cup (US)",
+      symbol: "cup",
+      category: "volume",
+      aliases: ["cup", "cups"],
+      ratioToBase: 0.24,
+    },
+    {
+      id: "cubic_meter",
+      name: "Cubic Meter",
+      symbol: "m³",
+      category: "volume",
+      aliases: ["cubic meter", "cubic meters", "m3", "m³"],
+      ratioToBase: 1000,
+    },
+  ],
+};

@@ -1,0 +1,67 @@
+import { ConverterPlugin } from "../engine/types";
+
+export const weightPlugin: ConverterPlugin = {
+  id: "weight",
+  name: "Weight / Mass",
+  description: "Convert kilograms, grams, pounds, ounces, metric tons, and stones.",
+  iconName: "Scale",
+  baseUnitId: "kilogram",
+  units: [
+    {
+      id: "kilogram",
+      name: "Kilogram",
+      symbol: "kg",
+      category: "weight",
+      aliases: ["kilogram", "kilograms", "kg", "kilos"],
+      ratioToBase: 1,
+    },
+    {
+      id: "gram",
+      name: "Gram",
+      symbol: "g",
+      category: "weight",
+      aliases: ["gram", "grams", "g"],
+      ratioToBase: 0.001,
+    },
+    {
+      id: "milligram",
+      name: "Milligram",
+      symbol: "mg",
+      category: "weight",
+      aliases: ["milligram", "milligrams", "mg"],
+      ratioToBase: 0.000001,
+    },
+    {
+      id: "pound",
+      name: "Pound",
+      symbol: "lb",
+      category: "weight",
+      aliases: ["pound", "pounds", "lb", "lbs"],
+      ratioToBase: 0.45359237,
+    },
+    {
+      id: "ounce",
+      name: "Ounce",
+      symbol: "oz",
+      category: "weight",
+      aliases: ["ounce", "ounces", "oz"],
+      ratioToBase: 0.028349523125,
+    },
+    {
+      id: "metric_ton",
+      name: "Metric Ton",
+      symbol: "t",
+      category: "weight",
+      aliases: ["metric ton", "metric tons", "ton", "tons", "tonne", "t"],
+      ratioToBase: 1000,
+    },
+    {
+      id: "stone",
+      name: "Stone",
+      symbol: "st",
+      category: "weight",
+      aliases: ["stone", "stones", "st"],
+      ratioToBase: 6.35029318,
+    },
+  ],
+};

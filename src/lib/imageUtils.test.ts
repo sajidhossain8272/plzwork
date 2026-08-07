@@ -1,25 +1,24 @@
-import test from 'node:test';
-import assert from 'node:assert';
-import { getBaseName } from './imageUtils.ts';
+import { describe, it, expect } from 'vitest';
+import { getBaseName } from './imageUtils';
 
-test('getBaseName', async (t) => {
-  await t.test('should strip extension from standard filename', () => {
-    assert.strictEqual(getBaseName('image.png'), 'image');
+describe('getBaseName', () => {
+  it('should strip extension from standard filename', () => {
+    expect(getBaseName('image.png')).toBe('image');
   });
 
-  await t.test('should handle multiple dots', () => {
-    assert.strictEqual(getBaseName('archive.tar.gz'), 'archive.tar');
+  it('should handle multiple dots', () => {
+    expect(getBaseName('archive.tar.gz')).toBe('archive.tar');
   });
 
-  await t.test('should handle no extension', () => {
-    assert.strictEqual(getBaseName('README'), 'README');
+  it('should handle no extension', () => {
+    expect(getBaseName('README')).toBe('README');
   });
 
-  await t.test('should handle hidden files', () => {
-    assert.strictEqual(getBaseName('.env'), '');
+  it('should handle hidden files', () => {
+    expect(getBaseName('.env')).toBe('');
   });
 
-  await t.test('should handle empty string', () => {
-    assert.strictEqual(getBaseName(''), '');
+  it('should handle empty string', () => {
+    expect(getBaseName('')).toBe('');
   });
 });

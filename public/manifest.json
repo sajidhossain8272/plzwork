@@ -1,0 +1,21 @@
+{
+  "name": "Quick Convert by Plzwork",
+  "short_name": "QuickConvert",
+  "description": "The fastest universal conversion engine for units, currencies, media, and developer utilities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e171d",
+  "theme_color": "#0e171d",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
